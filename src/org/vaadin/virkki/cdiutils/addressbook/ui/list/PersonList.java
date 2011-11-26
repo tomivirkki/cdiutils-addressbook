@@ -31,9 +31,8 @@ public class PersonList extends Table {
 	@Inject
 	private AddressBookApplication app;
 
-	public static final Object[] NATURAL_COL_ORDER = new Object[] {
-			"firstName", "lastName", "email", "phoneNumber", "streetAddress",
-			"postalCode", "city" };
+	public static final Object[] NATURAL_COL_ORDER = new Object[] { Person.Fields.firstName.name(), Person.Fields.lastName.name(), Person.Fields.email.name(),
+			Person.Fields.phoneNumber.name(), Person.Fields.streetAddress.name(), Person.Fields.postalCode.name(), Person.Fields.city.name() };
 
 	public void init() {
 		setSizeFull();
@@ -45,8 +44,7 @@ public class PersonList extends Table {
 
 		addListener(new Property.ValueChangeListener() {
 			@Override
-			public void valueChange(
-					com.vaadin.data.Property.ValueChangeEvent event) {
+			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				Person person = (Person) event.getProperty().getValue();
 				if (person != null) {
 					fireViewEvent(ListPresenter.PERSON_SELECTED, person);
@@ -55,30 +53,25 @@ public class PersonList extends Table {
 		});
 
 		initColumns();
-
-		setSortContainerPropertyId(Person.Fields.firstName.name());
 	}
 
 	private void initColumns() {
 		setContainerDataSource(new BeanItemContainer<Person>(Person.class));
 		setVisibleColumns(NATURAL_COL_ORDER);
 		for (Object propertyId : getVisibleColumns()) {
-			String header = lang.getText("person-"
-					+ String.valueOf(propertyId).toLowerCase());
+			String header = lang.getText("person-" + String.valueOf(propertyId).toLowerCase());
 			setColumnHeader(propertyId, header);
 		}
 
-		addGeneratedColumn("email", new ColumnGenerator() {
+		addGeneratedColumn(Person.Fields.email.name(), new ColumnGenerator() {
 			@Override
-			public Component generateCell(Table source, Object itemId,
-					Object columnId) {
-				Person p = (Person) itemId;
-				Link l = new Link();
-				l.setResource(new ExternalResource("mailto:" + p.getEmail()));
-				l.setCaption(p.getEmail());
-				return l;
+			public Component generateCell(Table source, Object itemId, Object columnId) {
+				String email = ((Person) itemId).getEmail();
+				return new Link(email, new ExternalResource("mailto:" + email));
 			}
 		});
+
+		setSortContainerPropertyId(Person.Fields.firstName.name());
 	}
 
 	public void setPersonList(Collection<Person> people) {
@@ -94,33 +87,24 @@ public class PersonList extends Table {
 		sort();
 	}
 
-	private void fireViewEvent(String methodIdentifier,
-			Object primaryParameter, Object... secondaryParameters) {
-		viewEvent.select(
-				new EventQualifierImpl(methodIdentifier, ListView.class) {
-				})
-				.fire(new ParameterDTO(primaryParameter, secondaryParameters));
-	}
-
 	@SuppressWarnings("unchecked")
 	public void applyFilter(SearchFilter searchFilter) {
 		BeanItemContainer<Person> container = (BeanItemContainer<Person>) getContainerDataSource();
 		// clear previous filters
 		container.removeAllContainerFilters();
+
 		if (searchFilter != null) {
 			// filter contacts with given filter
-			container.addContainerFilter(searchFilter.getPropertyId(),
-					searchFilter.getTerm(), true, false);
+			container.addContainerFilter(searchFilter.getPropertyId(), searchFilter.getTerm(), true, false);
 
-			String propertyName = lang.getText("person-"
-					+ String.valueOf(searchFilter.getPropertyId())
-							.toLowerCase());
-			app.getMainWindow().showNotification(
-					"Searched for " + propertyName + "=*"
-							+ searchFilter.getTerm() + "*, found "
-							+ container.size() + " item(s).",
-					Notification.TYPE_TRAY_NOTIFICATION);
+			String propertyName = lang.getText("person-" + String.valueOf(searchFilter.getPropertyId()).toLowerCase());
+			String notificationText = lang.getText("personlist-searchnotification", propertyName, searchFilter.getTerm(), container.size());
+			app.getMainWindow().showNotification(notificationText, Notification.TYPE_TRAY_NOTIFICATION);
 		}
+	}
+
+	private void fireViewEvent(String methodIdentifier, Object primaryParameter, Object... secondaryParameters) {
+		viewEvent.select(new EventQualifierImpl(methodIdentifier, ListView.class) {}).fire(new ParameterDTO(primaryParameter, secondaryParameters));
 	}
 
 }

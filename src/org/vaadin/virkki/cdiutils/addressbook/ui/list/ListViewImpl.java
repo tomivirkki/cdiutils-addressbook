@@ -78,4 +78,9 @@ public class ListViewImpl extends AbstractView implements ListView {
 	public void applyFilter(SearchFilter searchFilter) {
 		personList.get().applyFilter(searchFilter);
 	}
+
+	@Override
+	public void cancelEditing() {
+		personForm.get().cancel();
+	}
 }

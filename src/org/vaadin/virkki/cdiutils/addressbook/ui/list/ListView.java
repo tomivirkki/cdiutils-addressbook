@@ -23,4 +23,6 @@ public interface ListView extends View {
 	void editSelectedPerson();
 
 	void applyFilter(SearchFilter searchFilter);
+
+	void cancelEditing();
 }

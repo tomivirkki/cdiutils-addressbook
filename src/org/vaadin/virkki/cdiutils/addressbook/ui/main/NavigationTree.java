@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
+import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView.EventQualifierImpl;
 import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.mvp.View;
@@ -16,11 +17,13 @@ import com.vaadin.ui.Tree;
 @SuppressWarnings("serial")
 @SessionScoped
 public class NavigationTree extends Tree {
-	public static final Object SHOW_ALL = "Show all";
-	public static final Object SEARCH = "Search";
+	public static final Object SHOW_ALL = "showall";
+	public static final Object SEARCH = "search";
 
 	@Inject
 	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
+	@Inject
+	private Lang lang;
 
 	private final Property.ValueChangeListener listener = new Property.ValueChangeListener() {
 		@Override
@@ -38,28 +41,22 @@ public class NavigationTree extends Tree {
 		}
 	};
 
-	public NavigationTree() {
+	public void init() {
 		addItem(SHOW_ALL);
+		setItemCaption(SHOW_ALL, lang.getText("navigation-showall"));
 		addItem(SEARCH);
+		setItemCaption(SEARCH, lang.getText("navigation-search"));
 
 		setChildrenAllowed(SHOW_ALL, false);
-
-		/*
-		 * We want items to be selectable but do not want the user to be able to
-		 * de-select an item.
-		 */
 		setSelectable(true);
 		setNullSelectionAllowed(false);
 		setImmediate(true);
 
 		addListener(listener);
-
 	}
 
-	protected void fireViewEvent(String methodIdentifier,
-			Object primaryParameter, Object... secondaryParameters) {
-		viewEvent.select(new EventQualifierImpl(methodIdentifier, View.class) {
-		}).fire(new ParameterDTO(primaryParameter, secondaryParameters));
+	protected void fireViewEvent(String methodIdentifier, Object primaryParameter, Object... secondaryParameters) {
+		viewEvent.select(new EventQualifierImpl(methodIdentifier, View.class) {}).fire(new ParameterDTO(primaryParameter, secondaryParameters));
 	}
 
 	public void setSelectedView(Class<? extends View> viewClass) {

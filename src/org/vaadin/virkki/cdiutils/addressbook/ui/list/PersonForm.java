@@ -56,22 +56,18 @@ public class PersonForm extends Form {
 	private void initFieldFactory() {
 		setFormFieldFactory(new DefaultFieldFactory() {
 			@Override
-			public Field createField(Item item, Object propertyId,
-					Component uiContext) {
+			public Field createField(Item item, Object propertyId, Component uiContext) {
 				Field field = new TextField();
 
 				if (propertyId.equals(Person.Fields.city.name())) {
-					field = new ComboBox(lang.getText("person-city"),
-							cityOptions);
+					field = new ComboBox(lang.getText("person-city"), cityOptions);
 
 				} else if (propertyId.equals(Person.Fields.postalCode.name())) {
-					field.addValidator(new RegexpValidator("[1-9][0-9]{4}",
-							lang.getText("personform-error-postalcode")));
+					field.addValidator(new RegexpValidator("[1-9][0-9]{4}", lang.getText("personform-error-postalcode")));
 					field.setRequired(true);
 
 				} else if (propertyId.equals(Person.Fields.email.name())) {
-					field.addValidator(new EmailValidator(lang
-							.getText("personform-error-email")));
+					field.addValidator(new EmailValidator(lang.getText("personform-error-email")));
 					field.setRequired(true);
 
 				} else {
@@ -106,12 +102,7 @@ public class PersonForm extends Form {
 		cancelButton.addListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (!getItemPerson().isPersistent()) {
-					setItemDataSource(null);
-				} else {
-					discard();
-				}
-				setReadOnly(true);
+				fireViewEvent(ListPresenter.CANCEL, null);
 			}
 		});
 		footer.addComponent(cancelButton);
@@ -130,8 +121,7 @@ public class PersonForm extends Form {
 	@Override
 	public void setItemDataSource(Item newDataSource) {
 		if (newDataSource != null) {
-			super.setItemDataSource(newDataSource,
-					Arrays.asList(PersonList.NATURAL_COL_ORDER));
+			super.setItemDataSource(newDataSource, Arrays.asList(PersonList.NATURAL_COL_ORDER));
 		}
 		getFooter().setVisible(newDataSource != null);
 	}
@@ -158,12 +148,17 @@ public class PersonForm extends Form {
 		return ((BeanItem<Person>) getItemDataSource()).getBean();
 	}
 
-	private void fireViewEvent(String methodIdentifier,
-			Object primaryParameter, Object... secondaryParameters) {
-		viewEvent.select(
-				new EventQualifierImpl(methodIdentifier, ListView.class) {
-				})
-				.fire(new ParameterDTO(primaryParameter, secondaryParameters));
+	public void cancel() {
+		if (!getItemPerson().isPersistent()) {
+			setItemDataSource(null);
+		} else {
+			discard();
+		}
+		setReadOnly(true);
+	}
+
+	private void fireViewEvent(String methodIdentifier, Object primaryParameter, Object... secondaryParameters) {
+		viewEvent.select(new EventQualifierImpl(methodIdentifier, ListView.class) {}).fire(new ParameterDTO(primaryParameter, secondaryParameters));
 	}
 
 }

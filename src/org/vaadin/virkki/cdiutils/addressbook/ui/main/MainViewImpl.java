@@ -12,7 +12,6 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchViewImpl;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.mvp.View;
 
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -36,12 +35,12 @@ public class MainViewImpl extends AbstractView implements MainViev {
 	private Instance<ListViewImpl> listView;
 	@Inject
 	private Instance<SearchViewImpl> searchView;
+
+	// Windows
 	@Inject
 	private HelpWindow helpWindow;
 	@Inject
 	private SharingOptions sharingOptions;
-	@Inject
-	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
 
 	@Override
 	protected void initView() {
@@ -57,8 +56,9 @@ public class MainViewImpl extends AbstractView implements MainViev {
 		mainLayout.addComponent(horizontalSplit);
 		mainLayout.setExpandRatio(horizontalSplit, 1);
 
-		horizontalSplit.setSplitPosition(200, UNITS_PIXELS);
+		tree.get().init();
 		horizontalSplit.setFirstComponent(tree.get());
+		horizontalSplit.setSplitPosition(200, UNITS_PIXELS);
 
 		helpWindow.init();
 		sharingOptions.init();
@@ -67,8 +67,7 @@ public class MainViewImpl extends AbstractView implements MainViev {
 	}
 
 	@Override
-	public void setView(Class<? extends View> viewClass,
-			boolean selectInNavigationTree) {
+	public void setView(Class<? extends View> viewClass, boolean selectInNavigationTree) {
 		AbstractView view = null;
 		if (SearchView.class.isAssignableFrom(viewClass)) {
 			view = searchView.get();
@@ -76,9 +75,11 @@ public class MainViewImpl extends AbstractView implements MainViev {
 			view = listView.get();
 		}
 		horizontalSplit.setSecondComponent(view);
+
 		if (selectInNavigationTree) {
 			tree.get().setSelectedView(viewClass);
 		}
+
 		view.openView();
 	}
 

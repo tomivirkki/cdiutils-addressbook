@@ -57,16 +57,7 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 		searchTerm.setNullRepresentation("");
 		mainPanel.addComponent(searchTerm);
 
-		for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
-			fieldToSearch.addItem(PersonList.NATURAL_COL_ORDER[i]);
-
-			String header = getText("person-"
-					+ String.valueOf(PersonList.NATURAL_COL_ORDER[i])
-							.toLowerCase());
-			fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i],
-					header);
-		}
-		fieldToSearch.setNullSelectionAllowed(false);
+		constructFieldToSearch();
 		mainPanel.addComponent(fieldToSearch);
 
 		saveSearch.setValue(true);
@@ -90,28 +81,32 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 		mainPanel.addComponent(search);
 	}
 
+	private void constructFieldToSearch() {
+		for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
+			fieldToSearch.addItem(PersonList.NATURAL_COL_ORDER[i]);
+
+			String header = getText("person-" + String.valueOf(PersonList.NATURAL_COL_ORDER[i]).toLowerCase());
+			fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i], header);
+		}
+		fieldToSearch.setNullSelectionAllowed(false);
+	}
+
 	private void performSearch() {
 		String searchTerm = searchFilter.getTerm();
 		if ((searchTerm == null) || searchTerm.equals("")) {
-			getWindow().showNotification("Search term cannot be empty!",
-					Notification.TYPE_WARNING_MESSAGE);
-			return;
-		}
+			String errorText = getText("searchview-error-termempty");
+			getWindow().showNotification(errorText, Notification.TYPE_WARNING_MESSAGE);
 
-		if (saveSearch.booleanValue()) {
-			if (searchFilter.getSearchName() == null
-					|| searchFilter.getSearchName().isEmpty()) {
-				getWindow().showNotification(
-						"Please enter a name for your search!",
-						Notification.TYPE_WARNING_MESSAGE);
-				return;
+		} else if (saveSearch.booleanValue()) {
+			if (searchFilter.getSearchName() == null || searchFilter.getSearchName().isEmpty()) {
+				String errorText = getText("searchview-error-filternameempty");
+				getWindow().showNotification(errorText, Notification.TYPE_WARNING_MESSAGE);
+			} else {
+				fireViewEvent(MainPresenter.SAVE_SEARCH, searchFilter, saveSearch.booleanValue());
 			}
-			fireViewEvent(MainPresenter.SAVE_SEARCH, searchFilter,
-					saveSearch.booleanValue());
+
 		} else {
-			viewEvent.select(
-					new EventQualifierImpl(MainPresenter.SEARCH, View.class) {
-					}).fire(new ParameterDTO(searchFilter));
+			viewEvent.select(new EventQualifierImpl(MainPresenter.SEARCH, View.class) {}).fire(new ParameterDTO(searchFilter));
 		}
 
 	}
@@ -119,12 +114,9 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 	@Override
 	public void editNewSearchFilter(SearchFilter searchFilter) {
 		this.searchFilter = searchFilter;
-		searchTerm.setPropertyDataSource(new MethodProperty<String>(
-				searchFilter, SearchFilter.Fields.term.name()));
-		fieldToSearch.setPropertyDataSource(new MethodProperty<String>(
-				searchFilter, SearchFilter.Fields.propertyId.name()));
-		searchName.setPropertyDataSource(new MethodProperty<String>(
-				searchFilter, SearchFilter.Fields.searchName.name()));
+		searchTerm.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.term.name()));
+		fieldToSearch.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.propertyId.name()));
+		searchName.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.searchName.name()));
 		saveSearch.setValue(true);
 		fieldToSearch.setValue(Person.Fields.lastName.name());
 	}
