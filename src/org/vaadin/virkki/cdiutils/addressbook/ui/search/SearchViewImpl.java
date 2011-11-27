@@ -2,7 +2,6 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.search;
 
 import javax.inject.Inject;
 
-import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.PersonList;
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainPresenter;
@@ -26,7 +25,7 @@ import com.vaadin.ui.Window.Notification;
 @SuppressWarnings("serial")
 public class SearchViewImpl extends AbstractView implements SearchView {
 	@Inject
-	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
+	private javax.enterprise.event.Event<ParameterDTO> searchEvent;
 
 	@Inject
 	@Preconfigured(captionKey = "searchview-searchterm")
@@ -46,12 +45,11 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 	@Override
 	protected void initView() {
 		Panel mainPanel = new Panel();
-		FormLayout formLayout = new FormLayout();
-		mainPanel.setContent(formLayout);
+		mainPanel.setCaption(getText("searchview-caption"));
+		mainPanel.setContent(new FormLayout());
 		setCompositionRoot(mainPanel);
 
 		addStyleName("view");
-		setCaption(getText("searchview-caption"));
 		setSizeFull();
 
 		searchTerm.setNullRepresentation("");
@@ -72,7 +70,7 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 		searchName.setNullRepresentation("");
 		mainPanel.addComponent(searchName);
 
-		Button search = new Button("Search", new Button.ClickListener() {
+		Button search = new Button(getText("searchview-search"), new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				performSearch();
@@ -102,11 +100,11 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 				String errorText = getText("searchview-error-filternameempty");
 				getWindow().showNotification(errorText, Notification.TYPE_WARNING_MESSAGE);
 			} else {
-				fireViewEvent(MainPresenter.SAVE_SEARCH, searchFilter, saveSearch.booleanValue());
+				fireSearchEvent(MainPresenter.SAVE_SEARCH, searchFilter);
 			}
 
 		} else {
-			viewEvent.select(new EventQualifierImpl(MainPresenter.SEARCH, View.class) {}).fire(new ParameterDTO(searchFilter));
+			fireSearchEvent(MainPresenter.SEARCH, searchFilter);
 		}
 
 	}
@@ -118,7 +116,9 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 		fieldToSearch.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.propertyId.name()));
 		searchName.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.searchName.name()));
 		saveSearch.setValue(true);
-		fieldToSearch.setValue(Person.Fields.lastName.name());
 	}
 
+	protected void fireSearchEvent(String methodIdentifier, SearchFilter searchFilter) {
+		searchEvent.select(new EventQualifierImpl(methodIdentifier, View.class) {}).fire(new ParameterDTO(searchFilter));
+	}
 }

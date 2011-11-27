@@ -19,7 +19,7 @@ import com.vaadin.ui.HorizontalLayout;
 @SessionScoped
 public class Toolbar extends HorizontalLayout {
 	@Inject
-	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
+	private javax.enterprise.event.Event<ParameterDTO> navigationEvent;
 	@Inject
 	private Lang lang;
 
@@ -31,8 +31,8 @@ public class Toolbar extends HorizontalLayout {
 
 		addToolbarButton("toolbar-addcontact", "icons/32/document-add.png", MainPresenter.NEW_CONTACT);
 		addToolbarButton("toolbar-search", "icons/32/folder-add.png", MainPresenter.NEW_SEARCH);
-		addToolbarButton("toolbar-share", "icons/32/users.png", MainPresenter.SHARE_WINDOW_REQUESTED);
-		addToolbarButton("toolbar-help", "icons/32/help.png", MainPresenter.HELP_WINDOW_REQUESTED);
+		addToolbarButton("toolbar-share", "icons/32/users.png", MainPresenter.SHARE);
+		addToolbarButton("toolbar-help", "icons/32/help.png", MainPresenter.HELP);
 
 		Embedded em = new Embedded("", new ThemeResource("images/logo.png"));
 		addComponent(em);
@@ -46,7 +46,7 @@ public class Toolbar extends HorizontalLayout {
 		button.addListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				viewEvent.select(new EventQualifierImpl(methodId, View.class) {}).fire(new ParameterDTO(null));
+				navigationEvent.select(new EventQualifierImpl(methodId, View.class) {}).fire(new ParameterDTO(null));
 			}
 		});
 		addComponent(button);

@@ -18,6 +18,12 @@ public class SearchPresenter extends AbstractPresenter<SearchView> {
 
 	}
 
+	/*
+	 * Every time the SearchView is accessed (MainViewImpl calls
+	 * SearchViewImpl.openView(); that is) the Presenter is automatically
+	 * informed, a new SearchFilter is instantiated and passed to the view. View
+	 * uses the new SearchFilter to re-initialize the search-form.
+	 */
 	@Override
 	public void viewOpened() {
 		view.editNewSearchFilter(searchDAO.createNew());

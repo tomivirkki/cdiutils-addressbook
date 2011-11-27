@@ -3,6 +3,7 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.list;
 import java.util.Collection;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.AddressBookApplication;
@@ -28,8 +29,14 @@ public class PersonList extends Table {
 
 	@Inject
 	private Lang lang;
+
+	/*
+	 * The Application instance is needed in this class so it's simply injected
+	 * here as a field. Applications are session scoped so we can be sure to
+	 * receive the right instance.
+	 */
 	@Inject
-	private AddressBookApplication app;
+	private Instance<AddressBookApplication> app;
 
 	public static final Object[] NATURAL_COL_ORDER = new Object[] { Person.Fields.firstName.name(), Person.Fields.lastName.name(), Person.Fields.email.name(),
 			Person.Fields.phoneNumber.name(), Person.Fields.streetAddress.name(), Person.Fields.postalCode.name(), Person.Fields.city.name() };
@@ -47,7 +54,7 @@ public class PersonList extends Table {
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				Person person = (Person) event.getProperty().getValue();
 				if (person != null) {
-					fireViewEvent(ListPresenter.PERSON_SELECTED, person);
+					viewEvent.select(new EventQualifierImpl(ListPresenter.PERSON_SELECTED, ListView.class) {}).fire(new ParameterDTO(person));
 				}
 			}
 		});
@@ -98,13 +105,13 @@ public class PersonList extends Table {
 			container.addContainerFilter(searchFilter.getPropertyId(), searchFilter.getTerm(), true, false);
 
 			String propertyName = lang.getText("person-" + String.valueOf(searchFilter.getPropertyId()).toLowerCase());
+			/*
+			 * personlist-searchnotification -text has 3 parameters which are
+			 * passed in the Lang.getText-method.
+			 */
 			String notificationText = lang.getText("personlist-searchnotification", propertyName, searchFilter.getTerm(), container.size());
-			app.getMainWindow().showNotification(notificationText, Notification.TYPE_TRAY_NOTIFICATION);
+			app.get().getMainWindow().showNotification(notificationText, Notification.TYPE_TRAY_NOTIFICATION);
 		}
-	}
-
-	private void fireViewEvent(String methodIdentifier, Object primaryParameter, Object... secondaryParameters) {
-		viewEvent.select(new EventQualifierImpl(methodIdentifier, ListView.class) {}).fire(new ParameterDTO(primaryParameter, secondaryParameters));
 	}
 
 }

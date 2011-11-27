@@ -63,7 +63,7 @@ public class MainViewImpl extends AbstractView implements MainViev {
 		helpWindow.init();
 		sharingOptions.init();
 
-		tree.get().setValue(NavigationTree.SHOW_ALL);
+		tree.get().setValue(MainPresenter.SHOW_ALL);
 	}
 
 	@Override

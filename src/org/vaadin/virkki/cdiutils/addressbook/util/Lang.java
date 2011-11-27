@@ -22,6 +22,7 @@ public class Lang implements Serializable, TextBundle {
 
 	private ResourceBundle resourceBundle;
 
+	@Override
 	public String getText(String key, Object... params) {
 		try {
 			String value = resourceBundle.getString(key);

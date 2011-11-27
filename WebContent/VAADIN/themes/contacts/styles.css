@@ -28,6 +28,13 @@
       text-shadow: #fafafa 1px 1px 0;
 }
 
+.toolbar .v-button-wrap {
+      border: none;
+      background: transparent;
+      outline: none;
+      border-radius: 0;
+}
+
 .v-app {
       background: #d0e2ec;
       font-family: "Lucida Grande", Helvetica, Arial, sans-serif;

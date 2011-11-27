@@ -23,7 +23,10 @@ public class SearchDAOBean {
 	}
 
 	public SearchFilter createNew() {
-		return new SearchFilter();
+		SearchFilter searchFilter = new SearchFilter();
+		searchFilter.setPropertyId(Person.Fields.lastName.name());
+		log.info("New searchfilter initialized");
+		return searchFilter;
 	}
 
 }

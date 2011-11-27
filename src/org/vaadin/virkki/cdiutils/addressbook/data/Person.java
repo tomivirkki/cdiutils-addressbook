@@ -13,6 +13,7 @@ public class Person implements Serializable {
 	private Integer postalCode;
 	private String city;
 
+	// Fields are listed here for type-safety
 	public enum Fields {
 		id, firstName, lastName, email, phoneNumber, streetAddress, postalCode, city
 	}

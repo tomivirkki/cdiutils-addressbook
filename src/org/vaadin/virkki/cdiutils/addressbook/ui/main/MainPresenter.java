@@ -20,53 +20,41 @@ public class MainPresenter extends AbstractPresenter<MainViev> {
 	@EJB
 	private SearchDAOBean searchDAO;
 
-	public static final String SHARE_WINDOW_REQUESTED = "sr";
-	public static final String HELP_WINDOW_REQUESTED = "hr";
-	public static final String SHOW_ALL = "sa";
-	public static final String NEW_SEARCH = "ns";
-	public static final String NEW_CONTACT = "nc";
-	public static final String SAVE_SEARCH = "ss";
+	public static final String SHARE = "share";
+	public static final String HELP = "help";
+	public static final String SHOW_ALL = "show_all";
+	public static final String NEW_SEARCH = "new_search";
+	public static final String NEW_CONTACT = "new_contact";
+	public static final String SAVE_SEARCH = "save_search";
 	public static final String SEARCH = "search";
 
-	protected void shareWindowRequested(
-			@Observes @EventQualifier(methodId = SHARE_WINDOW_REQUESTED, viewInterface = View.class) ParameterDTO parameters) {
+	protected void shareWindowRequested(@Observes @EventQualifier(methodId = SHARE, viewInterface = View.class) ParameterDTO parameters) {
 		view.showShareWindow();
 	}
 
-	protected void helpWindowRequested(
-			@Observes @EventQualifier(methodId = HELP_WINDOW_REQUESTED, viewInterface = View.class) ParameterDTO parameters) {
+	protected void helpWindowRequested(@Observes @EventQualifier(methodId = HELP, viewInterface = View.class) ParameterDTO parameters) {
 		view.showHelpWindow();
 	}
 
-	protected void showAll(
-			@Observes @EventQualifier(methodId = SHOW_ALL, viewInterface = View.class) ParameterDTO parameters) {
+	protected void showAll(@Observes @EventQualifier(methodId = SHOW_ALL, viewInterface = View.class) ParameterDTO parameters) {
 		view.setView(ListView.class, true);
 	}
 
-	protected void newSearch(
-			@Observes @EventQualifier(methodId = NEW_SEARCH, viewInterface = View.class) ParameterDTO parameters) {
+	protected void newSearch(@Observes @EventQualifier(methodId = NEW_SEARCH, viewInterface = View.class) ParameterDTO parameters) {
 		view.setView(SearchView.class, true);
 	}
 
-	protected void newContact(
-			@Observes @EventQualifier(methodId = NEW_CONTACT, viewInterface = View.class) ParameterDTO parameters) {
+	protected void newContact(@Observes @EventQualifier(methodId = NEW_CONTACT, viewInterface = View.class) ParameterDTO parameters) {
 		view.setView(ListView.class, true);
 	}
 
-	protected void saveSearch(
-			@Observes @EventQualifier(methodId = SAVE_SEARCH, viewInterface = SearchView.class) ParameterDTO parameters) {
-		SearchFilter searchFilter = parameters
-				.getPrimaryParameter(SearchFilter.class);
-		boolean saveSearch = parameters.getSecondaryParameter(0, Boolean.class);
-
-		if (saveSearch) {
-			searchFilter = searchDAO.persist(searchFilter);
-			view.addSearchToTree(searchFilter);
-		}
+	protected void saveSearch(@Observes @EventQualifier(methodId = SAVE_SEARCH, viewInterface = View.class) ParameterDTO parameters) {
+		SearchFilter searchFilter = parameters.getPrimaryParameter(SearchFilter.class);
+		searchFilter = searchDAO.persist(searchFilter);
+		view.addSearchToTree(searchFilter);
 	}
 
-	protected void search(
-			@Observes @EventQualifier(methodId = SEARCH, viewInterface = View.class) ParameterDTO parameters) {
+	protected void search(@Observes @EventQualifier(methodId = SEARCH, viewInterface = View.class) ParameterDTO parameters) {
 		view.setView(ListView.class, false);
 	}
 

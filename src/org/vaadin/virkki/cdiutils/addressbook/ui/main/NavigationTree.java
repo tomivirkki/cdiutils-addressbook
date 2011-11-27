@@ -17,9 +17,6 @@ import com.vaadin.ui.Tree;
 @SuppressWarnings("serial")
 @SessionScoped
 public class NavigationTree extends Tree {
-	public static final Object SHOW_ALL = "showall";
-	public static final Object SEARCH = "search";
-
 	@Inject
 	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
 	@Inject
@@ -30,27 +27,26 @@ public class NavigationTree extends Tree {
 		public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 			Object itemId = event.getProperty().getValue();
 			if (itemId != null) {
-				if (NavigationTree.SHOW_ALL.equals(itemId)) {
-					fireViewEvent(MainPresenter.SHOW_ALL, null);
-				} else if (NavigationTree.SEARCH.equals(itemId)) {
-					fireViewEvent(MainPresenter.NEW_SEARCH, null);
-				} else if (itemId instanceof SearchFilter) {
+				if (itemId instanceof SearchFilter) {
 					fireViewEvent(MainPresenter.SEARCH, itemId);
+				} else {
+					fireViewEvent((String) itemId, null);
 				}
 			}
 		}
 	};
 
 	public void init() {
-		addItem(SHOW_ALL);
-		setItemCaption(SHOW_ALL, lang.getText("navigation-showall"));
-		addItem(SEARCH);
-		setItemCaption(SEARCH, lang.getText("navigation-search"));
-
-		setChildrenAllowed(SHOW_ALL, false);
 		setSelectable(true);
 		setNullSelectionAllowed(false);
 		setImmediate(true);
+
+		addItem(MainPresenter.SHOW_ALL);
+		setItemCaption(MainPresenter.SHOW_ALL, lang.getText("navigation-showall"));
+		setChildrenAllowed(MainPresenter.SHOW_ALL, false);
+
+		addItem(MainPresenter.NEW_SEARCH);
+		setItemCaption(MainPresenter.NEW_SEARCH, lang.getText("navigation-search"));
 
 		addListener(listener);
 	}
@@ -62,18 +58,18 @@ public class NavigationTree extends Tree {
 	public void setSelectedView(Class<? extends View> viewClass) {
 		removeListener(listener);
 		if (SearchView.class.isAssignableFrom(viewClass)) {
-			setValue(SEARCH);
+			setValue(MainPresenter.NEW_SEARCH);
 		} else if (ListView.class.isAssignableFrom(viewClass)) {
-			setValue(SHOW_ALL);
+			setValue(MainPresenter.SHOW_ALL);
 		}
 		addListener(listener);
 	}
 
 	public void addSearchToTree(SearchFilter searchFilter) {
 		addItem(searchFilter);
-		setParent(searchFilter, NavigationTree.SEARCH);
+		setParent(searchFilter, MainPresenter.NEW_SEARCH);
 		setChildrenAllowed(searchFilter, false);
-		expandItem(NavigationTree.SEARCH);
+		expandItem(MainPresenter.NEW_SEARCH);
 		setValue(searchFilter);
 	}
 }

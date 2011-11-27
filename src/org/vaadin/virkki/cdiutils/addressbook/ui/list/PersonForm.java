@@ -33,6 +33,14 @@ public class PersonForm extends Form {
 	@Inject
 	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
 
+	/*
+	 * With @Preconfigured annotation you can define Vaadin component attributes
+	 * (immediateness, height, caption and so on..) that are applied
+	 * injection-time. captionKey = "save", states that the caption of the
+	 * injected button should be the text received from
+	 * TextBundle-implementation (Lang in the case of this project, the texts
+	 * are in AddressBookLang_en_US.properties) with the key "save".
+	 */
 	@Inject
 	@Preconfigured(captionKey = "save")
 	private Button saveButton;
@@ -78,6 +86,7 @@ public class PersonForm extends Form {
 					((AbstractTextField) field).setNullRepresentation("");
 				}
 				field.setWidth(200.f, UNITS_PIXELS);
+				field.setCaption(lang.getText("person-" + String.valueOf(propertyId).toLowerCase()));
 				return field;
 			}
 		});
@@ -102,7 +111,7 @@ public class PersonForm extends Form {
 		cancelButton.addListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireViewEvent(ListPresenter.CANCEL, null);
+				fireViewEvent(ListPresenter.CANCEL_EDIT, null);
 			}
 		});
 		footer.addComponent(cancelButton);
@@ -110,6 +119,11 @@ public class PersonForm extends Form {
 		editButton.addListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
+				/*
+				 * Clicking the edit button only fires an event and nothing
+				 * more. The presenter which observes the event will decide what
+				 * happens next.
+				 */
 				fireViewEvent(ListPresenter.EDIT_PERSON, null);
 			}
 		});
@@ -157,8 +171,8 @@ public class PersonForm extends Form {
 		setReadOnly(true);
 	}
 
-	private void fireViewEvent(String methodIdentifier, Object primaryParameter, Object... secondaryParameters) {
-		viewEvent.select(new EventQualifierImpl(methodIdentifier, ListView.class) {}).fire(new ParameterDTO(primaryParameter, secondaryParameters));
+	private void fireViewEvent(String methodIdentifier, Object primaryParameter) {
+		viewEvent.select(new EventQualifierImpl(methodIdentifier, ListView.class) {}).fire(new ParameterDTO(primaryParameter));
 	}
 
 }
