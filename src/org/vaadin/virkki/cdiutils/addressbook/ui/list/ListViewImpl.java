@@ -59,7 +59,7 @@ public class ListViewImpl extends AbstractView implements ListView {
 
 	@Override
 	public void showSelectedPersonDetails() {
-		Item item = personList.get().getItem(personList.get().getValue());
+		Item item = personList.get().getSelectedItem();
 		personForm.get().setItemDataSource(item);
 		personForm.get().setReadOnly(true);
 	}

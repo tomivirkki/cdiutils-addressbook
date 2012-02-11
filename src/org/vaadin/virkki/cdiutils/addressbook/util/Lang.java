@@ -10,7 +10,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.TextBundle;
-import org.vaadin.virkki.cdiutils.addressbook.AddressBookApplication;
+import org.vaadin.virkki.cdiutils.application.ApplicationWrapper;
 
 @SuppressWarnings("serial")
 @SessionScoped
@@ -18,7 +18,7 @@ public class Lang implements Serializable, TextBundle {
 	public static final Locale en_US = new Locale("en", "US");
 
 	@Inject
-	private AddressBookApplication application;
+	private ApplicationWrapper applicationWrapper;
 
 	private ResourceBundle resourceBundle;
 
@@ -37,7 +37,7 @@ public class Lang implements Serializable, TextBundle {
 	public void setLocale(Locale locale) {
 		try {
 			resourceBundle = ResourceBundle.getBundle(Props.LANG_RESOURCES_NAME, locale);
-			application.setLocale(locale);
+			applicationWrapper.getApplication().setLocale(locale);
 		} catch (MissingResourceException e) {
 			// NOP
 		}

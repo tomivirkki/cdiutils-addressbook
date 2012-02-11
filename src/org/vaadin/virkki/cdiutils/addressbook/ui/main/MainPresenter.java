@@ -9,9 +9,9 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
 import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter;
 import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter.ViewInterface;
-import org.vaadin.virkki.cdiutils.mvp.AbstractView.EventQualifier;
 import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.mvp.View;
+import org.vaadin.virkki.cdiutils.mvp.ViewComponent.EventQualifier;
 
 @SuppressWarnings("serial")
 @ViewInterface(MainViev.class)

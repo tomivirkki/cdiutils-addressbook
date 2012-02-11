@@ -26,12 +26,10 @@ public class AddressBookApplication extends AbstractCdiApplication {
 
 	@Override
 	public void init() {
-		if (mainView.get().getParent()==null){
-			lang.get().setLocale(Lang.en_US);
-			setMainWindow(new Window(lang.get().getText("mainwindow-name")));
-			setTheme(Props.THEME_NAME);
-			getMainWindow().setContent(mainView.get());
-			mainView.get().openView();
-		}
+		lang.get().setLocale(Lang.en_US);
+		setMainWindow(new Window(lang.get().getText("mainwindow-name")));
+		setTheme(Props.THEME_NAME);
+		getMainWindow().setContent(mainView.get());
+		mainView.get().openView();
 	}
 }

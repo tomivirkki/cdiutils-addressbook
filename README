@@ -8,14 +8,5 @@ The classes under package org.vaadin.virkki.cdiutils.addressbook.ui.list contain
 of the documentation related to the changes.
 
 
-
 CdiUtils AddressBook can be deployed to any JavaEE6 (Web Profile)-compatible container
 (I've tested it on Glassfish 3.1 and JBoss AS7).
-
-1. Clone the project to your workspace
-2. Add the necessary libraries under WEB-INF/lib:
-	-Latest Vaadin library: https://vaadin.com/download
-	-Latest CDI Utils add-on: https://vaadin.com/directory#addon/cdi-utils
-	-(If deploying to JBoss AS, due to a bug in the container also
-	gwt-user.jar is needed: http://code.google.com/webtoolkit/download.html)
-3. Deploy

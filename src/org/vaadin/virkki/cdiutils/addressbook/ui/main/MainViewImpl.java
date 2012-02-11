@@ -4,12 +4,12 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.vaadin.virkki.cdiutils.addressbook.AddressBookApplication;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListViewImpl;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchViewImpl;
+import org.vaadin.virkki.cdiutils.application.ApplicationWrapper;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 import org.vaadin.virkki.cdiutils.mvp.View;
@@ -28,7 +28,7 @@ public class MainViewImpl extends AbstractView implements MainViev {
 	@Preconfigured
 	private HorizontalSplitPanel horizontalSplit;
 	@Inject
-	private Instance<AddressBookApplication> application;
+	private ApplicationWrapper applicationWrapper;
 
 	// Views
 	@Inject
@@ -86,14 +86,14 @@ public class MainViewImpl extends AbstractView implements MainViev {
 	@Override
 	public void showHelpWindow() {
 		if (helpWindow.getParent() == null) {
-			application.get().getMainWindow().addWindow(helpWindow);
+			applicationWrapper.getApplication().getMainWindow().addWindow(helpWindow);
 		}
 	}
 
 	@Override
 	public void showShareWindow() {
 		if (sharingOptions.getParent() == null) {
-			application.get().getMainWindow().addWindow(sharingOptions);
+			applicationWrapper.getApplication().getMainWindow().addWindow(sharingOptions);
 		}
 	}
 

@@ -3,58 +3,54 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.list;
 import java.util.Collection;
 
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.vaadin.virkki.cdiutils.addressbook.AddressBookApplication;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
-import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
-import org.vaadin.virkki.cdiutils.mvp.AbstractView.EventQualifierImpl;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
+import org.vaadin.virkki.cdiutils.application.ApplicationWrapper;
+import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
+import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Window.Notification;
 
 @SuppressWarnings("serial")
 @SessionScoped
-public class PersonList extends Table {
+public class PersonList extends ViewComponent {
 	@Inject
-	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
-
-	@Inject
-	private Lang lang;
+	@Preconfigured(nullSelectionAllowed = false, sizeFull = true, immediate = true)
+	private Table table;
 
 	/*
-	 * The Application instance is needed in this class so it's simply injected
-	 * here as a field. Applications are session scoped so we can be sure to
-	 * receive the right instance.
+	 * The Application instance is needed in this class so ApplicationWrapper is
+	 * simply injected here as a field.
 	 */
 	@Inject
-	private Instance<AddressBookApplication> app;
+	private ApplicationWrapper applicationWrapper;
 
-	public static final Object[] NATURAL_COL_ORDER = new Object[] { Person.Fields.firstName.name(), Person.Fields.lastName.name(), Person.Fields.email.name(),
-			Person.Fields.phoneNumber.name(), Person.Fields.streetAddress.name(), Person.Fields.postalCode.name(), Person.Fields.city.name() };
+	public static final Object[] NATURAL_COL_ORDER = new Object[] { Person.Fields.firstName.name(), Person.Fields.lastName.name(),
+			Person.Fields.email.name(), Person.Fields.phoneNumber.name(), Person.Fields.streetAddress.name(), Person.Fields.postalCode.name(),
+			Person.Fields.city.name() };
 
 	public void init() {
-		setSizeFull();
-		setColumnCollapsingAllowed(true);
-		setColumnReorderingAllowed(true);
-		setSelectable(true);
-		setImmediate(true);
-		setNullSelectionAllowed(false);
+		setCompositionRoot(table);
+		table.setColumnCollapsingAllowed(true);
+		table.setColumnReorderingAllowed(true);
+		table.setSelectable(true);
 
-		addListener(new Property.ValueChangeListener() {
+		table.addListener(new Property.ValueChangeListener() {
 			@Override
 			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
 				Person person = (Person) event.getProperty().getValue();
 				if (person != null) {
-					viewEvent.select(new EventQualifierImpl(ListPresenter.PERSON_SELECTED, ListView.class) {}).fire(new ParameterDTO(person));
+					fireViewEvent(ListPresenter.PERSON_SELECTED, ListView.class, person);
 				}
 			}
 		});
@@ -63,14 +59,14 @@ public class PersonList extends Table {
 	}
 
 	private void initColumns() {
-		setContainerDataSource(new BeanItemContainer<Person>(Person.class));
-		setVisibleColumns(NATURAL_COL_ORDER);
-		for (Object propertyId : getVisibleColumns()) {
-			String header = lang.getText("person-" + String.valueOf(propertyId).toLowerCase());
-			setColumnHeader(propertyId, header);
+		table.setContainerDataSource(new BeanItemContainer<Person>(Person.class));
+		table.setVisibleColumns(NATURAL_COL_ORDER);
+		for (Object propertyId : table.getVisibleColumns()) {
+			String header = getText("person-" + String.valueOf(propertyId).toLowerCase());
+			table.setColumnHeader(propertyId, header);
 		}
 
-		addGeneratedColumn(Person.Fields.email.name(), new ColumnGenerator() {
+		table.addGeneratedColumn(Person.Fields.email.name(), new ColumnGenerator() {
 			@Override
 			public Component generateCell(Table source, Object itemId, Object columnId) {
 				String email = ((Person) itemId).getEmail();
@@ -78,25 +74,25 @@ public class PersonList extends Table {
 			}
 		});
 
-		setSortContainerPropertyId(Person.Fields.firstName.name());
+		table.setSortContainerPropertyId(Person.Fields.firstName.name());
 	}
 
 	public void setPersonList(Collection<Person> people) {
-		removeAllItems();
+		table.removeAllItems();
 		for (Person person : people) {
-			addItem(person);
+			table.addItem(person);
 		}
-		sort();
+		table.sort();
 	}
 
 	public void addContactToList(Person person) {
-		addItem(person);
-		sort();
+		table.addItem(person);
+		table.sort();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void applyFilter(SearchFilter searchFilter) {
-		BeanItemContainer<Person> container = (BeanItemContainer<Person>) getContainerDataSource();
+		BeanItemContainer<Person> container = (BeanItemContainer<Person>) table.getContainerDataSource();
 		// clear previous filters
 		container.removeAllContainerFilters();
 
@@ -104,14 +100,22 @@ public class PersonList extends Table {
 			// filter contacts with given filter
 			container.addContainerFilter(searchFilter.getPropertyId(), searchFilter.getTerm(), true, false);
 
-			String propertyName = lang.getText("person-" + String.valueOf(searchFilter.getPropertyId()).toLowerCase());
+			String propertyName = getText("person-" + String.valueOf(searchFilter.getPropertyId()).toLowerCase());
 			/*
 			 * personlist-searchnotification -text has 3 parameters which are
 			 * passed in the Lang.getText-method.
 			 */
-			String notificationText = lang.getText("personlist-searchnotification", propertyName, searchFilter.getTerm(), container.size());
-			app.get().getMainWindow().showNotification(notificationText, Notification.TYPE_TRAY_NOTIFICATION);
+			String notificationText = getText("personlist-searchnotification", propertyName, searchFilter.getTerm(), container.size());
+			applicationWrapper.getApplication().getMainWindow().showNotification(notificationText, Notification.TYPE_TRAY_NOTIFICATION);
 		}
+	}
+
+	public void setValue(Person person) {
+		table.setValue(person);
+	}
+
+	public Item getSelectedItem() {
+		return table.getItem(table.getValue());
 	}
 
 }

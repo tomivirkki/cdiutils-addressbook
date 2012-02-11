@@ -9,9 +9,9 @@ import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainPresenter;
 import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter;
 import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter.ViewInterface;
-import org.vaadin.virkki.cdiutils.mvp.AbstractView.EventQualifier;
 import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.mvp.View;
+import org.vaadin.virkki.cdiutils.mvp.ViewComponent.EventQualifier;
 
 /*
  * List presenter is the presenter of ListView. EJBs and other resources should

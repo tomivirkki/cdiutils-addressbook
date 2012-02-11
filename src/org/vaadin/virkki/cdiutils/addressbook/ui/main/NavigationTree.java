@@ -6,21 +6,19 @@ import javax.inject.Inject;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
-import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
-import org.vaadin.virkki.cdiutils.mvp.AbstractView.EventQualifierImpl;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
+import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.View;
+import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.data.Property;
 import com.vaadin.ui.Tree;
 
 @SuppressWarnings("serial")
 @SessionScoped
-public class NavigationTree extends Tree {
+public class NavigationTree extends ViewComponent {
 	@Inject
-	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
-	@Inject
-	private Lang lang;
+	@Preconfigured(nullSelectionAllowed = false, immediate = true)
+	private Tree tree;
 
 	private final Property.ValueChangeListener listener = new Property.ValueChangeListener() {
 		@Override
@@ -28,48 +26,47 @@ public class NavigationTree extends Tree {
 			Object itemId = event.getProperty().getValue();
 			if (itemId != null) {
 				if (itemId instanceof SearchFilter) {
-					fireViewEvent(MainPresenter.SEARCH, itemId);
+					fireViewEvent(MainPresenter.SEARCH, View.class, itemId);
 				} else {
-					fireViewEvent((String) itemId, null);
+					fireViewEvent((String) itemId, View.class, null);
 				}
 			}
 		}
 	};
 
 	public void init() {
-		setSelectable(true);
-		setNullSelectionAllowed(false);
-		setImmediate(true);
+		tree.setSelectable(true);
 
-		addItem(MainPresenter.SHOW_ALL);
-		setItemCaption(MainPresenter.SHOW_ALL, lang.getText("navigation-showall"));
-		setChildrenAllowed(MainPresenter.SHOW_ALL, false);
+		tree.addItem(MainPresenter.SHOW_ALL);
+		tree.setItemCaption(MainPresenter.SHOW_ALL, getText("navigation-showall"));
+		tree.setChildrenAllowed(MainPresenter.SHOW_ALL, false);
 
-		addItem(MainPresenter.NEW_SEARCH);
-		setItemCaption(MainPresenter.NEW_SEARCH, lang.getText("navigation-search"));
+		tree.addItem(MainPresenter.NEW_SEARCH);
+		tree.setItemCaption(MainPresenter.NEW_SEARCH, getText("navigation-search"));
 
-		addListener(listener);
-	}
-
-	protected void fireViewEvent(String methodIdentifier, Object primaryParameter, Object... secondaryParameters) {
-		viewEvent.select(new EventQualifierImpl(methodIdentifier, View.class) {}).fire(new ParameterDTO(primaryParameter, secondaryParameters));
+		tree.addListener(listener);
+		setCompositionRoot(tree);
 	}
 
 	public void setSelectedView(Class<? extends View> viewClass) {
-		removeListener(listener);
+		tree.removeListener(listener);
 		if (SearchView.class.isAssignableFrom(viewClass)) {
 			setValue(MainPresenter.NEW_SEARCH);
 		} else if (ListView.class.isAssignableFrom(viewClass)) {
 			setValue(MainPresenter.SHOW_ALL);
 		}
-		addListener(listener);
+		tree.addListener(listener);
 	}
 
 	public void addSearchToTree(SearchFilter searchFilter) {
-		addItem(searchFilter);
-		setParent(searchFilter, MainPresenter.NEW_SEARCH);
-		setChildrenAllowed(searchFilter, false);
-		expandItem(MainPresenter.NEW_SEARCH);
-		setValue(searchFilter);
+		tree.addItem(searchFilter);
+		tree.setParent(searchFilter, MainPresenter.NEW_SEARCH);
+		tree.setChildrenAllowed(searchFilter, false);
+		tree.expandItem(MainPresenter.NEW_SEARCH);
+		tree.setValue(searchFilter);
+	}
+
+	public void setValue(String value) {
+		tree.setValue(value);
 	}
 }

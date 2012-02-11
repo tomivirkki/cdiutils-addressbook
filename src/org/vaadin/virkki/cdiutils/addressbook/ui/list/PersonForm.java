@@ -7,10 +7,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
-import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.AbstractView.EventQualifierImpl;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
+import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
@@ -29,10 +27,7 @@ import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
 @SessionScoped
-public class PersonForm extends Form {
-	@Inject
-	private javax.enterprise.event.Event<ParameterDTO> viewEvent;
-
+public class PersonForm extends ViewComponent {
 	/*
 	 * With @Preconfigured annotation you can define Vaadin component attributes
 	 * (immediateness, height, caption and so on..) that are applied
@@ -51,31 +46,32 @@ public class PersonForm extends Form {
 	@Preconfigured(captionKey = "edit")
 	private Button editButton;
 	@Inject
-	private Lang lang;
+	@Preconfigured(writeTrough = false)
+	private Form form;
 
 	private Collection<String> cityOptions;
 
 	public void init() {
-		setWriteThrough(false);
+		setCompositionRoot(form);
 		initFieldFactory();
 		constructFooter();
 	}
 
 	private void initFieldFactory() {
-		setFormFieldFactory(new DefaultFieldFactory() {
+		form.setFormFieldFactory(new DefaultFieldFactory() {
 			@Override
 			public Field createField(Item item, Object propertyId, Component uiContext) {
 				Field field = new TextField();
 
 				if (propertyId.equals(Person.Fields.city.name())) {
-					field = new ComboBox(lang.getText("person-city"), cityOptions);
+					field = new ComboBox(getText("person-city"), cityOptions);
 
 				} else if (propertyId.equals(Person.Fields.postalCode.name())) {
-					field.addValidator(new RegexpValidator("[1-9][0-9]{4}", lang.getText("personform-error-postalcode")));
+					field.addValidator(new RegexpValidator("[1-9][0-9]{4}", getText("personform-error-postalcode")));
 					field.setRequired(true);
 
 				} else if (propertyId.equals(Person.Fields.email.name())) {
-					field.addValidator(new EmailValidator(lang.getText("personform-error-email")));
+					field.addValidator(new EmailValidator(getText("personform-error-email")));
 					field.setRequired(true);
 
 				} else {
@@ -86,7 +82,7 @@ public class PersonForm extends Form {
 					((AbstractTextField) field).setNullRepresentation("");
 				}
 				field.setWidth(200.f, UNITS_PIXELS);
-				field.setCaption(lang.getText("person-" + String.valueOf(propertyId).toLowerCase()));
+				field.setCaption(getText("person-" + String.valueOf(propertyId).toLowerCase()));
 				return field;
 			}
 		});
@@ -100,9 +96,9 @@ public class PersonForm extends Form {
 		saveButton.addListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				if (isValid()) {
-					commit();
-					fireViewEvent(ListPresenter.SAVE_PERSON, getItemPerson());
+				if (form.isValid()) {
+					form.commit();
+					fireViewEvent(ListPresenter.SAVE_PERSON, ListView.class, getItemPerson());
 				}
 			}
 		});
@@ -111,7 +107,7 @@ public class PersonForm extends Form {
 		cancelButton.addListener(new Button.ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
-				fireViewEvent(ListPresenter.CANCEL_EDIT, null);
+				fireViewEvent(ListPresenter.CANCEL_EDIT, ListView.class, null);
 			}
 		});
 		footer.addComponent(cancelButton);
@@ -124,20 +120,19 @@ public class PersonForm extends Form {
 				 * more. The presenter which observes the event will decide what
 				 * happens next.
 				 */
-				fireViewEvent(ListPresenter.EDIT_PERSON, null);
+				fireViewEvent(ListPresenter.EDIT_PERSON, ListView.class, null);
 			}
 		});
 		footer.addComponent(editButton);
 
-		setFooter(footer);
+		form.setFooter(footer);
 	}
 
-	@Override
 	public void setItemDataSource(Item newDataSource) {
 		if (newDataSource != null) {
-			super.setItemDataSource(newDataSource, Arrays.asList(PersonList.NATURAL_COL_ORDER));
+			form.setItemDataSource(newDataSource, Arrays.asList(PersonList.NATURAL_COL_ORDER));
 		}
-		getFooter().setVisible(newDataSource != null);
+		form.getFooter().setVisible(newDataSource != null);
 	}
 
 	@Override
@@ -146,6 +141,7 @@ public class PersonForm extends Form {
 		saveButton.setVisible(!readOnly);
 		cancelButton.setVisible(!readOnly);
 		editButton.setVisible(readOnly);
+		form.setReadOnly(readOnly);
 	}
 
 	public void editNewContact(Person person) {
@@ -159,20 +155,16 @@ public class PersonForm extends Form {
 
 	@SuppressWarnings("unchecked")
 	private Person getItemPerson() {
-		return ((BeanItem<Person>) getItemDataSource()).getBean();
+		return ((BeanItem<Person>) form.getItemDataSource()).getBean();
 	}
 
 	public void cancel() {
 		if (!getItemPerson().isPersistent()) {
-			setItemDataSource(null);
+			form.setItemDataSource(null);
 		} else {
-			discard();
+			form.discard();
 		}
 		setReadOnly(true);
-	}
-
-	private void fireViewEvent(String methodIdentifier, Object primaryParameter) {
-		viewEvent.select(new EventQualifierImpl(methodIdentifier, ListView.class) {}).fire(new ParameterDTO(primaryParameter));
 	}
 
 }
