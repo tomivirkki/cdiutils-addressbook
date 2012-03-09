@@ -10,9 +10,12 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
+
 @Stateless
 public class PersonDAOBean {
 	@Inject
+	@Preconfigured
 	private Logger log;
 
 	private static Set<Person> personDatabase = createPersonDatabase();

@@ -9,7 +9,6 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListViewImpl;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchViewImpl;
-import org.vaadin.virkki.cdiutils.application.ApplicationWrapper;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 import org.vaadin.virkki.cdiutils.mvp.View;
@@ -27,8 +26,6 @@ public class MainViewImpl extends AbstractView implements MainViev {
 	@Inject
 	@Preconfigured
 	private HorizontalSplitPanel horizontalSplit;
-	@Inject
-	private ApplicationWrapper applicationWrapper;
 
 	// Views
 	@Inject
@@ -67,7 +64,8 @@ public class MainViewImpl extends AbstractView implements MainViev {
 	}
 
 	@Override
-	public void setView(Class<? extends View> viewClass, boolean selectInNavigationTree) {
+	public void setView(Class<? extends View> viewClass,
+			boolean selectInNavigationTree) {
 		AbstractView view = null;
 		if (SearchView.class.isAssignableFrom(viewClass)) {
 			view = searchView.get();
@@ -86,14 +84,16 @@ public class MainViewImpl extends AbstractView implements MainViev {
 	@Override
 	public void showHelpWindow() {
 		if (helpWindow.getParent() == null) {
-			applicationWrapper.getApplication().getMainWindow().addWindow(helpWindow);
+			applicationWrapper.getApplication().getMainWindow()
+					.addWindow(helpWindow);
 		}
 	}
 
 	@Override
 	public void showShareWindow() {
 		if (sharingOptions.getParent() == null) {
-			applicationWrapper.getApplication().getMainWindow().addWindow(sharingOptions);
+			applicationWrapper.getApplication().getMainWindow()
+					.addWindow(sharingOptions);
 		}
 	}
 
