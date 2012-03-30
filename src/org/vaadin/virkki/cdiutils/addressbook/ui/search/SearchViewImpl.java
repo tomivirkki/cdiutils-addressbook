@@ -7,8 +7,6 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.list.PersonList;
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainPresenter;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
-import org.vaadin.virkki.cdiutils.mvp.View;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -24,101 +22,104 @@ import com.vaadin.ui.Window.Notification;
 
 @SuppressWarnings("serial")
 public class SearchViewImpl extends AbstractView implements SearchView {
-	@Inject
-	private javax.enterprise.event.Event<ParameterDTO> searchEvent;
+    @Inject
+    @Preconfigured(captionKey = "searchview-searchterm")
+    private TextField searchTerm;
+    @Inject
+    @Preconfigured(captionKey = "searchview-fieldtosearch")
+    private NativeSelect fieldToSearch;
+    @Inject
+    @Preconfigured(captionKey = "searchview-savesearch", immediate = true, implementation = CheckBox.class)
+    private Button saveSearch;
+    @Inject
+    @Preconfigured(captionKey = "searchview-searchname")
+    private TextField searchName;
 
-	@Inject
-	@Preconfigured(captionKey = "searchview-searchterm")
-	private TextField searchTerm;
-	@Inject
-	@Preconfigured(captionKey = "searchview-fieldtosearch")
-	private NativeSelect fieldToSearch;
-	@Inject
-	@Preconfigured(captionKey = "searchview-savesearch", immediate = true, implementation = CheckBox.class)
-	private Button saveSearch;
-	@Inject
-	@Preconfigured(captionKey = "searchview-searchname")
-	private TextField searchName;
+    private SearchFilter searchFilter;
 
-	private SearchFilter searchFilter;
+    @Override
+    protected final void initView() {
+        final Panel mainPanel = new Panel();
+        mainPanel.setCaption(getText("searchview-caption"));
+        mainPanel.setContent(new FormLayout());
+        setCompositionRoot(mainPanel);
 
-	@Override
-	protected void initView() {
-		Panel mainPanel = new Panel();
-		mainPanel.setCaption(getText("searchview-caption"));
-		mainPanel.setContent(new FormLayout());
-		setCompositionRoot(mainPanel);
+        addStyleName("view");
+        setSizeFull();
 
-		addStyleName("view");
-		setSizeFull();
+        searchTerm.setNullRepresentation("");
+        mainPanel.addComponent(searchTerm);
 
-		searchTerm.setNullRepresentation("");
-		mainPanel.addComponent(searchTerm);
+        constructFieldToSearch();
+        mainPanel.addComponent(fieldToSearch);
 
-		constructFieldToSearch();
-		mainPanel.addComponent(fieldToSearch);
+        saveSearch.setValue(true);
+        saveSearch.addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(final ValueChangeEvent event) {
+                searchName.setVisible(saveSearch.booleanValue());
+            }
+        });
+        mainPanel.addComponent(saveSearch);
 
-		saveSearch.setValue(true);
-		saveSearch.addListener(new Property.ValueChangeListener() {
-			@Override
-			public void valueChange(ValueChangeEvent event) {
-				searchName.setVisible(saveSearch.booleanValue());
-			}
-		});
-		mainPanel.addComponent(saveSearch);
+        searchName.setNullRepresentation("");
+        mainPanel.addComponent(searchName);
 
-		searchName.setNullRepresentation("");
-		mainPanel.addComponent(searchName);
+        final Button search = new Button(getText("searchview-search"),
+                new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(final ClickEvent event) {
+                        performSearch();
+                    }
+                });
+        mainPanel.addComponent(search);
+    }
 
-		Button search = new Button(getText("searchview-search"), new Button.ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				performSearch();
-			}
-		});
-		mainPanel.addComponent(search);
-	}
+    private void constructFieldToSearch() {
+        for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
+            fieldToSearch.addItem(PersonList.NATURAL_COL_ORDER[i]);
 
-	private void constructFieldToSearch() {
-		for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
-			fieldToSearch.addItem(PersonList.NATURAL_COL_ORDER[i]);
+            final String header = getText("person-"
+                    + String.valueOf(PersonList.NATURAL_COL_ORDER[i])
+                            .toLowerCase());
+            fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i],
+                    header);
+        }
+        fieldToSearch.setNullSelectionAllowed(false);
+    }
 
-			String header = getText("person-" + String.valueOf(PersonList.NATURAL_COL_ORDER[i]).toLowerCase());
-			fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i], header);
-		}
-		fieldToSearch.setNullSelectionAllowed(false);
-	}
+    private void performSearch() {
+        final String searchTerm = searchFilter.getTerm();
+        if ((searchTerm == null) || searchTerm.equals("")) {
+            final String errorText = getText("searchview-error-termempty");
+            getWindow().showNotification(errorText,
+                    Notification.TYPE_WARNING_MESSAGE);
 
-	private void performSearch() {
-		String searchTerm = searchFilter.getTerm();
-		if ((searchTerm == null) || searchTerm.equals("")) {
-			String errorText = getText("searchview-error-termempty");
-			getWindow().showNotification(errorText, Notification.TYPE_WARNING_MESSAGE);
+        } else if (saveSearch.booleanValue()) {
+            if (searchFilter.getSearchName() == null
+                    || searchFilter.getSearchName().isEmpty()) {
+                final String errorText = getText("searchview-error-filternameempty");
+                getWindow().showNotification(errorText,
+                        Notification.TYPE_WARNING_MESSAGE);
+            } else {
+                fireViewEvent(MainPresenter.SAVE_SEARCH, searchFilter);
+            }
 
-		} else if (saveSearch.booleanValue()) {
-			if (searchFilter.getSearchName() == null || searchFilter.getSearchName().isEmpty()) {
-				String errorText = getText("searchview-error-filternameempty");
-				getWindow().showNotification(errorText, Notification.TYPE_WARNING_MESSAGE);
-			} else {
-				fireSearchEvent(MainPresenter.SAVE_SEARCH, searchFilter);
-			}
+        } else {
+            fireViewEvent(MainPresenter.SEARCH, searchFilter);
+        }
 
-		} else {
-			fireSearchEvent(MainPresenter.SEARCH, searchFilter);
-		}
+    }
 
-	}
-
-	@Override
-	public void editNewSearchFilter(SearchFilter searchFilter) {
-		this.searchFilter = searchFilter;
-		searchTerm.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.term.name()));
-		fieldToSearch.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.propertyId.name()));
-		searchName.setPropertyDataSource(new MethodProperty<String>(searchFilter, SearchFilter.Fields.searchName.name()));
-		saveSearch.setValue(true);
-	}
-
-	protected void fireSearchEvent(String methodIdentifier, SearchFilter searchFilter) {
-		searchEvent.select(new EventQualifierImpl(methodIdentifier, View.class) {}).fire(new ParameterDTO(searchFilter));
-	}
+    @Override
+    public final void editNewSearchFilter(final SearchFilter searchFilter) {
+        this.searchFilter = searchFilter;
+        searchTerm.setPropertyDataSource(new MethodProperty<String>(
+                searchFilter, SearchFilter.Fields.term.name()));
+        fieldToSearch.setPropertyDataSource(new MethodProperty<String>(
+                searchFilter, SearchFilter.Fields.propertyId.name()));
+        searchName.setPropertyDataSource(new MethodProperty<String>(
+                searchFilter, SearchFilter.Fields.searchName.name()));
+        saveSearch.setValue(true);
+    }
 }

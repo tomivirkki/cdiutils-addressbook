@@ -1,6 +1,5 @@
 package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -9,97 +8,120 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListViewImpl;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchViewImpl;
+import org.vaadin.virkki.cdiutils.addressbook.ui.test.TestViewImpl;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 import org.vaadin.virkki.cdiutils.mvp.View;
 
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
-@SessionScoped
-public class MainViewImpl extends AbstractView implements MainViev {
-	@Inject
-	private Instance<NavigationTree> tree;
-	@Inject
-	private Instance<Toolbar> toolbar;
-	@Inject
-	@Preconfigured
-	private HorizontalSplitPanel horizontalSplit;
+public class MainViewImpl extends AbstractView implements MainViev, Handler {
+    @Inject
+    private Instance<NavigationTree> tree;
+    @Inject
+    private Instance<Toolbar> toolbar;
+    @Inject
+    @Preconfigured
+    private HorizontalSplitPanel horizontalSplit;
 
-	// Views
-	@Inject
-	private Instance<ListViewImpl> listView;
-	@Inject
-	private Instance<SearchViewImpl> searchView;
+    // Views
+    @Inject
+    private Instance<ListViewImpl> listView;
+    @Inject
+    private Instance<SearchViewImpl> searchView;
 
-	// Windows
-	@Inject
-	private HelpWindow helpWindow;
-	@Inject
-	private SharingOptions sharingOptions;
+    // Windows
+    @Inject
+    private HelpWindow helpWindow;
+    @Inject
+    private SharingOptions sharingOptions;
 
-	@Override
-	protected void initView() {
-		setSizeFull();
+    // For testing
+    @Inject
+    private Instance<TestViewImpl> testView;
+    private final Action actionTestcontent = new ShortcutAction("Alt+C",
+            ShortcutAction.KeyCode.C,
+            new int[] { ShortcutAction.ModifierKey.ALT });
 
-		VerticalLayout mainLayout = new VerticalLayout();
-		setCompositionRoot(mainLayout);
-		mainLayout.setSizeFull();
+    @Override
+    protected final void initView() {
+        setSizeFull();
 
-		toolbar.get().init();
-		mainLayout.addComponent(toolbar.get());
+        final VerticalLayout mainLayout = new VerticalLayout();
+        setCompositionRoot(mainLayout);
+        mainLayout.setSizeFull();
 
-		mainLayout.addComponent(horizontalSplit);
-		mainLayout.setExpandRatio(horizontalSplit, 1);
+        toolbar.get().init();
+        mainLayout.addComponent(toolbar.get());
 
-		tree.get().init();
-		horizontalSplit.setFirstComponent(tree.get());
-		horizontalSplit.setSplitPosition(200, UNITS_PIXELS);
+        mainLayout.addComponent(horizontalSplit);
+        mainLayout.setExpandRatio(horizontalSplit, 1);
 
-		helpWindow.init();
-		sharingOptions.init();
+        tree.get().init();
+        horizontalSplit.setFirstComponent(tree.get());
+        horizontalSplit.setSplitPosition(200, UNITS_PIXELS);
 
-		tree.get().setValue(MainPresenter.SHOW_ALL);
-	}
+        helpWindow.init();
+        sharingOptions.init();
 
-	@Override
-	public void setView(Class<? extends View> viewClass,
-			boolean selectInNavigationTree) {
-		AbstractView view = null;
-		if (SearchView.class.isAssignableFrom(viewClass)) {
-			view = searchView.get();
-		} else if (ListView.class.isAssignableFrom(viewClass)) {
-			view = listView.get();
-		}
-		horizontalSplit.setSecondComponent(view);
+        tree.get().setValue(MainPresenter.SHOW_ALL);
 
-		if (selectInNavigationTree) {
-			tree.get().setSelectedView(viewClass);
-		}
+        getContextWindow().addActionHandler(this);
+    }
 
-		view.openView();
-	}
+    @Override
+    public final void setView(final Class<? extends View> viewClass,
+            final boolean selectInNavigationTree) {
+        AbstractView view = null;
+        if (SearchView.class.isAssignableFrom(viewClass)) {
+            view = searchView.get();
+        } else if (ListView.class.isAssignableFrom(viewClass)) {
+            view = listView.get();
+        }
+        horizontalSplit.setSecondComponent(view);
 
-	@Override
-	public void showHelpWindow() {
-		if (helpWindow.getParent() == null) {
-			applicationWrapper.getApplication().getMainWindow()
-					.addWindow(helpWindow);
-		}
-	}
+        if (selectInNavigationTree) {
+            tree.get().setSelectedView(viewClass);
+        }
 
-	@Override
-	public void showShareWindow() {
-		if (sharingOptions.getParent() == null) {
-			applicationWrapper.getApplication().getMainWindow()
-					.addWindow(sharingOptions);
-		}
-	}
+        view.openView();
+    }
 
-	@Override
-	public void addSearchToTree(SearchFilter searchFilter) {
-		tree.get().addSearchToTree(searchFilter);
-	}
+    @Override
+    public final void showHelpWindow() {
+        if (helpWindow.getParent() == null) {
+            getContextWindow().addWindow(helpWindow);
+        }
+    }
 
+    @Override
+    public final void showShareWindow() {
+        if (sharingOptions.getParent() == null) {
+            getContextWindow().addWindow(sharingOptions);
+        }
+    }
+
+    @Override
+    public final void addSearchToTree(final SearchFilter searchFilter) {
+        tree.get().addSearchToTree(searchFilter);
+    }
+
+    @Override
+    public final Action[] getActions(final Object target, final Object sender) {
+        return new Action[] { actionTestcontent };
+    }
+
+    @Override
+    public final void handleAction(final Action action, final Object sender,
+            final Object target) {
+        if (action == actionTestcontent) {
+            horizontalSplit.setSecondComponent(testView.get());
+            testView.get().openView();
+        }
+    }
 }

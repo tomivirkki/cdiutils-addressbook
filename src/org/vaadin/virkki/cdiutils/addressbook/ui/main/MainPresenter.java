@@ -9,63 +9,70 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
 import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter;
 import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter.ViewInterface;
+import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
 import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
-import org.vaadin.virkki.cdiutils.mvp.View;
-import org.vaadin.virkki.cdiutils.mvp.ViewComponent.EventQualifier;
 
 @SuppressWarnings("serial")
 @ViewInterface(MainViev.class)
 public class MainPresenter extends AbstractPresenter<MainViev> {
 
-	@EJB
-	private SearchDAOBean searchDAO;
+    @EJB
+    private SearchDAOBean searchDAO;
 
-	public static final String SHARE = "share";
-	public static final String HELP = "help";
-	public static final String SHOW_ALL = "show_all";
-	public static final String NEW_SEARCH = "new_search";
-	public static final String NEW_CONTACT = "new_contact";
-	public static final String SAVE_SEARCH = "save_search";
-	public static final String SEARCH = "search";
+    public static final String SHARE = "main_presenter_share";
+    public static final String HELP = "main_presenter_help";
+    public static final String SHOW_ALL = "main_presenter_show_all";
+    public static final String NEW_SEARCH = "main_presenter_new_search";
+    public static final String NEW_CONTACT = "main_presenter_new_contact";
+    public static final String SAVE_SEARCH = "main_presenter_save_search";
+    public static final String SEARCH = "main_presenter_search";
 
-	protected void shareWindowRequested(@Observes @EventQualifier(methodId = SHARE, viewInterface = View.class) ParameterDTO parameters) {
-		view.showShareWindow();
-	}
+    protected final void shareWindowRequested(
+            @Observes @CDIEvent(SHARE) final ParameterDTO parameters) {
+        view.showShareWindow();
+    }
 
-	protected void helpWindowRequested(@Observes @EventQualifier(methodId = HELP, viewInterface = View.class) ParameterDTO parameters) {
-		view.showHelpWindow();
-	}
+    protected final void helpWindowRequested(
+            @Observes @CDIEvent(HELP) final ParameterDTO parameters) {
+        view.showHelpWindow();
+    }
 
-	protected void showAll(@Observes @EventQualifier(methodId = SHOW_ALL, viewInterface = View.class) ParameterDTO parameters) {
-		view.setView(ListView.class, true);
-	}
+    protected final void showAll(
+            @Observes @CDIEvent(SHOW_ALL) final ParameterDTO parameters) {
+        view.setView(ListView.class, true);
+    }
 
-	protected void newSearch(@Observes @EventQualifier(methodId = NEW_SEARCH, viewInterface = View.class) ParameterDTO parameters) {
-		view.setView(SearchView.class, true);
-	}
+    protected final void newSearch(
+            @Observes @CDIEvent(NEW_SEARCH) final ParameterDTO parameters) {
+        view.setView(SearchView.class, true);
+    }
 
-	protected void newContact(@Observes @EventQualifier(methodId = NEW_CONTACT, viewInterface = View.class) ParameterDTO parameters) {
-		view.setView(ListView.class, true);
-	}
+    protected final void newContact(
+            @Observes @CDIEvent(NEW_CONTACT) final ParameterDTO parameters) {
+        view.setView(ListView.class, true);
+    }
 
-	protected void saveSearch(@Observes @EventQualifier(methodId = SAVE_SEARCH, viewInterface = View.class) ParameterDTO parameters) {
-		SearchFilter searchFilter = parameters.getPrimaryParameter(SearchFilter.class);
-		searchFilter = searchDAO.persist(searchFilter);
-		view.addSearchToTree(searchFilter);
-	}
+    protected final void saveSearch(
+            @Observes @CDIEvent(SAVE_SEARCH) final ParameterDTO parameters) {
+        SearchFilter searchFilter = parameters
+                .getPrimaryParameter(SearchFilter.class);
+        searchFilter = searchDAO.persist(searchFilter);
+        view.addSearchToTree(searchFilter);
+    }
 
-	protected void search(@Observes @EventQualifier(methodId = SEARCH, viewInterface = View.class) ParameterDTO parameters) {
-		view.setView(ListView.class, false);
-	}
+    protected final void search(
+            @Observes @CDIEvent(SEARCH) final ParameterDTO parameters) {
+        view.setView(ListView.class, false);
+    }
 
-	@Override
-	protected void initPresenter() {
+    @Override
+    protected final void initPresenter() {
+        // NOP
+    }
 
-	}
-
-	@Override
-	public void viewOpened() {
-
-	}
+    @Override
+    public final void viewOpened() {
+        // NOP
+    }
 
 }

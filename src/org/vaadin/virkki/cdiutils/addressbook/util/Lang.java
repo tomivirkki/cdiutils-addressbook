@@ -6,41 +6,47 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.TextBundle;
-import org.vaadin.virkki.cdiutils.application.ApplicationWrapper;
+import org.vaadin.virkki.cdiutils.addressbook.AddressBookApplication;
+import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped;
+import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped.VaadinScope;
 
 @SuppressWarnings("serial")
-@SessionScoped
+@VaadinScoped(VaadinScope.APPLICATION)
 public class Lang implements Serializable, TextBundle {
-	public static final Locale en_US = new Locale("en", "US");
+    public static final Locale EN_US = new Locale("en", "US");
 
-	@Inject
-	private ApplicationWrapper applicationWrapper;
+    @Inject
+    private Instance<AddressBookApplication> application;
 
-	private ResourceBundle resourceBundle;
+    private ResourceBundle resourceBundle;
 
-	@Override
-	public String getText(String key, Object... params) {
-		try {
-			String value = resourceBundle.getString(key);
-			return MessageFormat.format(value, params);
-		} catch (MissingResourceException e) {
-			return "!" + key;
-		} catch (NullPointerException e) {
-			return "No bundle!";
-		}
-	}
+    @Override
+    public final String getText(final String key, final Object... params) {
+        String value;
+        if (resourceBundle == null) {
+            value = "No bundle!";
+        } else {
+            try {
+                value = MessageFormat.format(resourceBundle.getString(key),
+                        params);
+            } catch (final MissingResourceException e) {
+                value = "!" + key;
+            }
+        }
+        return value;
+    }
 
-	public void setLocale(Locale locale) {
-		try {
-			resourceBundle = ResourceBundle.getBundle(Props.LANG_RESOURCES_NAME, locale);
-			applicationWrapper.getApplication().setLocale(locale);
-		} catch (MissingResourceException e) {
-			// NOP
-		}
-	}
+    public final void setLocale(final Locale locale) {
+        try {
+            resourceBundle = ResourceBundle.getBundle(
+                    Props.LANG_RESOURCES_NAME, locale);
+        } catch (final MissingResourceException e) {
+            // NOP
+        }
+    }
 
 }
