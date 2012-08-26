@@ -4,24 +4,23 @@ import java.util.Locale;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainViewImpl;
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
 import org.vaadin.virkki.cdiutils.addressbook.util.Props;
 import org.vaadin.virkki.cdiutils.application.AbstractCdiApplication;
-import org.vaadin.virkki.cdiutils.application.AbstractCdiApplicationServlet;
-import org.vaadin.virkki.cdiutils.application.AbstractCdiApplicationServlet.ApplicationClass;
+import org.vaadin.virkki.cdiutils.application.CdiApplicationServlet;
 
 import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
 public class AddressBookApplication extends AbstractCdiApplication {
 
-    @WebServlet(urlPatterns = "/*")
-    @ApplicationClass(AddressBookApplication.class)
+    @WebServlet(urlPatterns = "/*", initParams = @WebInitParam(name = "application", value = "org.vaadin.virkki.cdiutils.addressbook.AddressBookApplication"))
     public static class AddressBookApplicationServlet extends
-            AbstractCdiApplicationServlet {
+            CdiApplicationServlet {
     }
 
     @Inject
