@@ -27,32 +27,32 @@ public class MainPresenter extends AbstractPresenter<MainViev> {
     public static final String SAVE_SEARCH = "main_presenter_save_search";
     public static final String SEARCH = "main_presenter_search";
 
-    protected final void shareWindowRequested(
+    protected void shareWindowRequested(
             @Observes @CDIEvent(SHARE) final ParameterDTO parameters) {
         view.showShareWindow();
     }
 
-    protected final void helpWindowRequested(
+    protected void helpWindowRequested(
             @Observes @CDIEvent(HELP) final ParameterDTO parameters) {
         view.showHelpWindow();
     }
 
-    protected final void showAll(
+    protected void showAll(
             @Observes @CDIEvent(SHOW_ALL) final ParameterDTO parameters) {
         view.setView(ListView.class, true);
     }
 
-    protected final void newSearch(
+    protected void newSearch(
             @Observes @CDIEvent(NEW_SEARCH) final ParameterDTO parameters) {
         view.setView(SearchView.class, true);
     }
 
-    protected final void newContact(
+    protected void newContact(
             @Observes @CDIEvent(NEW_CONTACT) final ParameterDTO parameters) {
         view.setView(ListView.class, true);
     }
 
-    protected final void saveSearch(
+    protected void saveSearch(
             @Observes @CDIEvent(SAVE_SEARCH) final ParameterDTO parameters) {
         SearchFilter searchFilter = parameters
                 .getPrimaryParameter(SearchFilter.class);
@@ -60,18 +60,18 @@ public class MainPresenter extends AbstractPresenter<MainViev> {
         view.addSearchToTree(searchFilter);
     }
 
-    protected final void search(
+    protected void search(
             @Observes @CDIEvent(SEARCH) final ParameterDTO parameters) {
         view.setView(ListView.class, false);
     }
 
     @Override
-    protected final void initPresenter() {
+    protected void initPresenter() {
         // NOP
     }
 
     @Override
-    public final void viewOpened() {
+    public void viewOpened() {
         // NOP
     }
 

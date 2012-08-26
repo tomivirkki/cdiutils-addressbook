@@ -16,9 +16,9 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window.Notification;
 
 @SuppressWarnings("serial")
 public class SearchViewImpl extends AbstractView implements SearchView {
@@ -29,8 +29,8 @@ public class SearchViewImpl extends AbstractView implements SearchView {
     @Preconfigured(captionKey = "searchview-fieldtosearch")
     private NativeSelect fieldToSearch;
     @Inject
-    @Preconfigured(captionKey = "searchview-savesearch", immediate = true, implementation = CheckBox.class)
-    private Button saveSearch;
+    @Preconfigured(captionKey = "searchview-savesearch", immediate = true)
+    private CheckBox saveSearch;
     @Inject
     @Preconfigured(captionKey = "searchview-searchname")
     private TextField searchName;
@@ -38,7 +38,7 @@ public class SearchViewImpl extends AbstractView implements SearchView {
     private SearchFilter searchFilter;
 
     @Override
-    protected final void initView() {
+    protected void initView() {
         final Panel mainPanel = new Panel();
         mainPanel.setCaption(getText("searchview-caption"));
         mainPanel.setContent(new FormLayout());
@@ -92,15 +92,13 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         final String searchTerm = searchFilter.getTerm();
         if ((searchTerm == null) || searchTerm.equals("")) {
             final String errorText = getText("searchview-error-termempty");
-            getWindow().showNotification(errorText,
-                    Notification.TYPE_WARNING_MESSAGE);
+            Notification.show(errorText, Notification.Type.WARNING_MESSAGE);
 
         } else if (saveSearch.booleanValue()) {
             if (searchFilter.getSearchName() == null
                     || searchFilter.getSearchName().isEmpty()) {
                 final String errorText = getText("searchview-error-filternameempty");
-                getWindow().showNotification(errorText,
-                        Notification.TYPE_WARNING_MESSAGE);
+                Notification.show(errorText, Notification.Type.WARNING_MESSAGE);
             } else {
                 fireViewEvent(MainPresenter.SAVE_SEARCH, searchFilter);
             }
@@ -112,7 +110,7 @@ public class SearchViewImpl extends AbstractView implements SearchView {
     }
 
     @Override
-    public final void editNewSearchFilter(final SearchFilter searchFilter) {
+    public void editNewSearchFilter(final SearchFilter searchFilter) {
         this.searchFilter = searchFilter;
         searchTerm.setPropertyDataSource(new MethodProperty<String>(
                 searchFilter, SearchFilter.Fields.term.name()));

@@ -25,7 +25,7 @@ public class SearchPresenter extends AbstractPresenter<SearchView> {
      * uses the new SearchFilter to re-initialize the search-form.
      */
     @Override
-    public final void viewOpened() {
+    public void viewOpened() {
         view.editNewSearchFilter(searchDAO.createNew());
     }
 

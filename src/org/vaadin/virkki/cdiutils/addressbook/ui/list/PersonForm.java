@@ -46,21 +46,22 @@ public class PersonForm extends ViewComponent {
     @Preconfigured(captionKey = "edit")
     private Button editButton;
     @Inject
-    @Preconfigured(writeTrough = false)
+    @Preconfigured()
     private Form form;
 
     private Collection<String> cityOptions;
 
-    public final void init() {
+    public void init() {
         setCompositionRoot(form);
         initFieldFactory();
         constructFooter();
     }
 
+    @SuppressWarnings("deprecation")
     private void initFieldFactory() {
         form.setFormFieldFactory(new DefaultFieldFactory() {
             @Override
-            public Field createField(final Item item, Object propertyId,
+            public Field createField(final Item item, final Object propertyId,
                     final Component uiContext) {
                 Field field = new TextField();
 
@@ -93,7 +94,7 @@ public class PersonForm extends ViewComponent {
     }
 
     private void constructFooter() {
-        HorizontalLayout footer = new HorizontalLayout();
+        final HorizontalLayout footer = new HorizontalLayout();
         footer.setSpacing(true);
         footer.setVisible(false);
 
@@ -132,7 +133,7 @@ public class PersonForm extends ViewComponent {
         form.setFooter(footer);
     }
 
-    public final void setItemDataSource(final Item newDataSource) {
+    public void setItemDataSource(final Item newDataSource) {
         if (newDataSource != null) {
             form.setItemDataSource(newDataSource,
                     Arrays.asList(PersonList.NATURAL_COL_ORDER));
@@ -141,7 +142,7 @@ public class PersonForm extends ViewComponent {
     }
 
     @Override
-    public final void setReadOnly(final boolean readOnly) {
+    public void setReadOnly(final boolean readOnly) {
         super.setReadOnly(readOnly);
         saveButton.setVisible(!readOnly);
         cancelButton.setVisible(!readOnly);
@@ -149,12 +150,12 @@ public class PersonForm extends ViewComponent {
         form.setReadOnly(readOnly);
     }
 
-    public final void editNewContact(final Person person) {
+    public void editNewContact(final Person person) {
         setItemDataSource(new BeanItem<Person>(person));
         setReadOnly(false);
     }
 
-    public final void setCityOptions(final Collection<String> cityOptions) {
+    public void setCityOptions(final Collection<String> cityOptions) {
         this.cityOptions = cityOptions;
     }
 
@@ -163,7 +164,7 @@ public class PersonForm extends ViewComponent {
         return ((BeanItem<Person>) form.getItemDataSource()).getBean();
     }
 
-    public final void cancel() {
+    public void cancel() {
         if (!getItemPerson().isPersistent()) {
             form.setItemDataSource(null);
         } else {

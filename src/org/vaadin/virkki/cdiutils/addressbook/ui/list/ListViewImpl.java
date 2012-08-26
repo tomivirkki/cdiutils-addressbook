@@ -33,7 +33,7 @@ public class ListViewImpl extends AbstractView implements ListView {
      * View is constructed in the initView-method.
      */
     @Override
-    protected final void initView() {
+    protected void initView() {
         addStyleName("view");
         setSizeFull();
 
@@ -49,51 +49,51 @@ public class ListViewImpl extends AbstractView implements ListView {
     }
 
     @Override
-    public final void setPersonList(final Collection<Person> people) {
+    public void setPersonList(final Collection<Person> people) {
         personList.get().setPersonList(people);
     }
 
     @Override
-    public final void showSelectedPersonDetails() {
+    public void showSelectedPersonDetails() {
         final Item item = personList.get().getSelectedItem();
         personForm.get().setItemDataSource(item);
         personForm.get().setReadOnly(true);
     }
 
     @Override
-    public final void editNewContact(final Person person) {
+    public void editNewContact(final Person person) {
         personList.get().setValue(null);
         personForm.get().editNewContact(person);
     }
 
     @Override
-    public final void setCityOptions(final Collection<String> cityOptions) {
+    public void setCityOptions(final Collection<String> cityOptions) {
         personForm.get().setCityOptions(cityOptions);
     }
 
     @Override
-    public final void addContactToList(final Person person) {
+    public void addContactToList(final Person person) {
         personList.get().addContactToList(person);
     }
 
     @Override
-    public final void selectPerson(final Person person) {
+    public void selectPerson(final Person person) {
         personList.get().setValue(person);
         personForm.get().setReadOnly(true);
     }
 
     @Override
-    public final void editSelectedPerson() {
+    public void editSelectedPerson() {
         personForm.get().setReadOnly(false);
     }
 
     @Override
-    public final void applyFilter(final SearchFilter searchFilter) {
+    public void applyFilter(final SearchFilter searchFilter) {
         personList.get().applyFilter(searchFilter);
     }
 
     @Override
-    public final void cancelEditing() {
+    public void cancelEditing() {
         personForm.get().cancel();
     }
 }

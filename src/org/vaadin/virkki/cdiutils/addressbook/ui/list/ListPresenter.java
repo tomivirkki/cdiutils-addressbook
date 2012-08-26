@@ -34,12 +34,12 @@ public class ListPresenter extends AbstractPresenter<ListView> {
      * This method observes events with a ParameterDTO as parameter type and
      * PERSON_SELECTED as the @EventQualifier value
      */
-    protected final void personSelected(
+    protected void personSelected(
             @Observes @CDIEvent(PERSON_SELECTED) final ParameterDTO parameters) {
         view.showSelectedPersonDetails();
     }
 
-    protected final void editPerson(
+    protected void editPerson(
             @Observes @CDIEvent(EDIT_PERSON) final ParameterDTO parameters) {
         view.editSelectedPerson();
     }
@@ -50,7 +50,7 @@ public class ListPresenter extends AbstractPresenter<ListView> {
      * told to add the newly persisted person to the navigation tree. Otherwise
      * the view is only told to set the person selected.
      */
-    protected final void savePerson(
+    protected void savePerson(
             @Observes @CDIEvent(SAVE_PERSON) final ParameterDTO parameters) {
         Person person = parameters.getPrimaryParameter(Person.class);
         if (person.isPersistent()) {
@@ -62,23 +62,23 @@ public class ListPresenter extends AbstractPresenter<ListView> {
         view.selectPerson(person);
     }
 
-    protected final void cancel(
+    protected void cancel(
             @Observes @CDIEvent(CANCEL_EDIT) final ParameterDTO parameters) {
         view.cancelEditing();
     }
 
-    protected final void showAll(
+    protected void showAll(
             @Observes @CDIEvent(MainPresenter.SHOW_ALL) final ParameterDTO parameters) {
         view.setPersonList(personDAO.listPeople());
         view.applyFilter(null);
     }
 
-    protected final void newContact(
+    protected void newContact(
             @Observes @CDIEvent(MainPresenter.NEW_CONTACT) final ParameterDTO parameters) {
         view.editNewContact(personDAO.createNew());
     }
 
-    protected final void search(
+    protected void search(
             @Observes @CDIEvent(MainPresenter.SEARCH) final ParameterDTO parameters) {
         final SearchFilter searchFilter = parameters
                 .getPrimaryParameter(SearchFilter.class);
@@ -90,7 +90,7 @@ public class ListPresenter extends AbstractPresenter<ListView> {
      * backend (personDAO) and passes the list to the view.
      */
     @Override
-    protected final void initPresenter() {
+    protected void initPresenter() {
         view.setCityOptions(personDAO.listCities());
     }
 

@@ -17,10 +17,10 @@ import com.vaadin.ui.HorizontalLayout;
 @VaadinScoped
 public class Toolbar extends ViewComponent {
     @Inject
-    @Preconfigured(styleName = "toolbar", margin = true, spacing = true, width = 100.0f, widthUnits = UNITS_PERCENTAGE)
+    @Preconfigured(styleName = "toolbar", spacing = true, width = 100.0f, widthUnits = Unit.PERCENTAGE)
     private HorizontalLayout layout;
 
-    public final void init() {
+    public void init() {
         addToolbarButton("toolbar-addcontact", "icons/32/document-add.png",
                 MainPresenter.NEW_CONTACT);
         addToolbarButton("toolbar-search", "icons/32/folder-add.png",

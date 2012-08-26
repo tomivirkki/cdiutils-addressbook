@@ -17,9 +17,9 @@ public class SharingOptions extends Window {
     @Inject
     private Lang lang;
 
-    public final void init() {
+    public void init() {
         setModal(true);
-        setWidth(50.0f, UNITS_PERCENTAGE);
+        setWidth(50.0f, Unit.PERCENTAGE);
         center();
         setCaption(lang.getText("sharingoptions-caption"));
         addComponent(new Label(lang.getText("sharingoptions-content")));

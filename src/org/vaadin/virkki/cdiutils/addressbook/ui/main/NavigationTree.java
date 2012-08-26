@@ -35,7 +35,7 @@ public class NavigationTree extends ViewComponent {
         }
     };
 
-    public final void init() {
+    public void init() {
         tree.setSelectable(true);
 
         tree.addItem(MainPresenter.SHOW_ALL);
@@ -51,7 +51,7 @@ public class NavigationTree extends ViewComponent {
         setCompositionRoot(tree);
     }
 
-    public final void setSelectedView(final Class<? extends View> viewClass) {
+    public void setSelectedView(final Class<? extends View> viewClass) {
         tree.removeListener(listener);
         if (SearchView.class.isAssignableFrom(viewClass)) {
             setValue(MainPresenter.NEW_SEARCH);
@@ -61,7 +61,7 @@ public class NavigationTree extends ViewComponent {
         tree.addListener(listener);
     }
 
-    public final void addSearchToTree(final SearchFilter searchFilter) {
+    public void addSearchToTree(final SearchFilter searchFilter) {
         tree.addItem(searchFilter);
         tree.setParent(searchFilter, MainPresenter.NEW_SEARCH);
         tree.setChildrenAllowed(searchFilter, false);
@@ -69,7 +69,7 @@ public class NavigationTree extends ViewComponent {
         tree.setValue(searchFilter);
     }
 
-    public final void setValue(final String value) {
+    public void setValue(final String value) {
         tree.setValue(value);
     }
 }
