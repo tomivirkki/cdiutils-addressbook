@@ -3,7 +3,7 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
-import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped;
+import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -12,7 +12,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-@VaadinScoped
+@UIScoped
 @SuppressWarnings("serial")
 public class SharingOptions extends Window {
     @Inject

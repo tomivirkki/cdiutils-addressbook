@@ -2,7 +2,7 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 
 import javax.inject.Inject;
 
-import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped;
+import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
@@ -14,7 +14,7 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 
 @SuppressWarnings("serial")
-@VaadinScoped
+@UIScoped
 public class Toolbar extends ViewComponent {
     @Inject
     @Preconfigured(styleName = "toolbar", spacing = true, width = 100.0f, widthUnits = Unit.PERCENTAGE)

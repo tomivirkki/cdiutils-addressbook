@@ -6,7 +6,7 @@ import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
-import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped;
+import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
@@ -21,7 +21,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 
 @SuppressWarnings("serial")
-@VaadinScoped
+@UIScoped
 public class PersonList extends ViewComponent {
     @Inject
     @Preconfigured(nullSelectionAllowed = false, sizeFull = true, immediate = true)

@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainViewImpl;
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
 import org.vaadin.virkki.cdiutils.addressbook.util.Props;
-import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped;
+import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.Constants;
@@ -20,12 +20,13 @@ import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
 @Theme(Props.THEME_NAME)
-@VaadinScoped
+@UIScoped
 public class AddressBookUI extends UI {
 
     @WebServlet(urlPatterns = "/*", initParams = {
             @WebInitParam(name = VaadinSession.UI_PARAMETER, value = Props.UI_NAME),
-            @WebInitParam(name = Constants.SERVLET_PARAMETER_UI_PROVIDER, value = Props.UI_PROVIDER_NAME) })
+            @WebInitParam(name = Constants.SERVLET_PARAMETER_UI_PROVIDER, value = Props.UI_PROVIDER_NAME),
+            @WebInitParam(name = "heartbeatInterval", value = "1"), })
     public static class AddressBookApplicationServlet extends VaadinServlet {
     }
 

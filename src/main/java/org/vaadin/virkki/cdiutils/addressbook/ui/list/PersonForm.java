@@ -6,7 +6,7 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
-import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped;
+import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
@@ -26,7 +26,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
-@VaadinScoped
+@UIScoped
 public class PersonForm extends ViewComponent {
     /*
      * With @Preconfigured annotation you can define Vaadin component attributes

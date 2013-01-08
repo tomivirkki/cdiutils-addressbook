@@ -6,6 +6,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.vaadin.virkki.cdiutils.application.UIContext.ContextDelegate;
+import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 
 import com.vaadin.ui.Button;
@@ -24,11 +26,13 @@ public class TestView extends VerticalLayout {
     private Button dereferenceButton;
     @Inject
     private Instance<TestBean> testBean;
+    @Inject
+    private ContextDelegate contextDelegate;
 
     @PostConstruct
     public void postConstruct() {
         addComponent(testButton);
-        testButton.addListener(new Button.ClickListener() {
+        testButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
                 Notification.show("Bean date: "
@@ -36,15 +40,15 @@ public class TestView extends VerticalLayout {
             }
         });
         addComponent(dereferenceButton);
-        dereferenceButton.addListener(new Button.ClickListener() {
+        dereferenceButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
-                // contextHandle.dereferenceBeanInstance(TestBean.class);
-                Notification.show("Not supported?");
+                contextDelegate.dereferenceBeanInstance(TestBean.class);
             }
         });
     }
 
+    @UIScoped
     public static class TestBean {
         private final Date currentDate = new Date();
 
