@@ -26,7 +26,7 @@ public class AddressBookUI extends UI {
     @WebServlet(urlPatterns = "/*", initParams = {
             @WebInitParam(name = VaadinSession.UI_PARAMETER, value = Props.UI_NAME),
             @WebInitParam(name = Constants.SERVLET_PARAMETER_UI_PROVIDER, value = Props.UI_PROVIDER_NAME),
-            @WebInitParam(name = "heartbeatInterval", value = "1"), })
+            @WebInitParam(name = "heartbeatInterval", value = "1") })
     public static class AddressBookApplicationServlet extends VaadinServlet {
     }
 
