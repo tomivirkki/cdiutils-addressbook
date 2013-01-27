@@ -18,6 +18,7 @@ import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped.VaadinS
 @VaadinScoped(VaadinScope.APPLICATION)
 public class Lang implements Serializable, TextBundle {
     public static final Locale EN_US = new Locale("en", "US");
+    public static final Locale FI_FI = new Locale("fi", "FI");
 
     @Inject
     private Instance<AddressBookApplication> application;
@@ -29,6 +30,8 @@ public class Lang implements Serializable, TextBundle {
         String value;
         if (resourceBundle == null) {
             value = "No bundle!";
+        } else if (key == null) {
+            value = "Null key!";
         } else {
             try {
                 value = MessageFormat.format(resourceBundle.getString(key),

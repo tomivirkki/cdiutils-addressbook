@@ -23,7 +23,7 @@ public class ListPresenter extends AbstractPresenter<ListView> {
     @Inject
     private PersonDAOBean personDAO;
 
-    // CDI Utils includes a built-in CDI event qualifier @EventQualifier which
+    // CDI Utils includes a built-in CDI event qualifier @CDIEvent which
     // uses a String (method identifier) as it's member
     public static final String PERSON_SELECTED = "list_presenter_person_selected";
     public static final String EDIT_PERSON = "list_presenter_edit_person";
@@ -32,7 +32,7 @@ public class ListPresenter extends AbstractPresenter<ListView> {
 
     /*
      * This method observes events with a ParameterDTO as parameter type and
-     * PERSON_SELECTED as the @EventQualifier value
+     * PERSON_SELECTED as the @CDIEvent value
      */
     protected final void personSelected(
             @Observes @CDIEvent(PERSON_SELECTED) final ParameterDTO parameters) {

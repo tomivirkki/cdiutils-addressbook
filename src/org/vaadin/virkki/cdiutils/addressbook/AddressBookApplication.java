@@ -12,6 +12,9 @@ import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
 import org.vaadin.virkki.cdiutils.addressbook.util.Props;
 import org.vaadin.virkki.cdiutils.application.AbstractCdiApplication;
 import org.vaadin.virkki.cdiutils.application.CdiApplicationServlet;
+import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
+import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
+import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 
 import com.vaadin.ui.Window;
 
@@ -27,6 +30,9 @@ public class AddressBookApplication extends AbstractCdiApplication {
     private Instance<MainViewImpl> mainView;
     @Inject
     private Instance<Lang> lang;
+    @Inject
+    @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES)
+    private javax.enterprise.event.Event<ParameterDTO> localizeEvent;
 
     @Override
     public final void init() {
@@ -39,8 +45,9 @@ public class AddressBookApplication extends AbstractCdiApplication {
 
     @Override
     public final void setLocale(final Locale locale) {
-        lang.get().setLocale(Lang.EN_US);
+        lang.get().setLocale(locale);
         super.setLocale(locale);
+        localizeEvent.fire(new ParameterDTO(null));
     }
 
     // The following methods are for multi-window support

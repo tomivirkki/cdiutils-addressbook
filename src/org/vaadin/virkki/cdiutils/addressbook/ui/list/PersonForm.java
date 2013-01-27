@@ -60,7 +60,7 @@ public class PersonForm extends ViewComponent {
     private void initFieldFactory() {
         form.setFormFieldFactory(new DefaultFieldFactory() {
             @Override
-            public Field createField(final Item item, Object propertyId,
+            public Field createField(final Item item, final Object propertyId,
                     final Component uiContext) {
                 Field field = new TextField();
 
@@ -93,7 +93,7 @@ public class PersonForm extends ViewComponent {
     }
 
     private void constructFooter() {
-        HorizontalLayout footer = new HorizontalLayout();
+        final HorizontalLayout footer = new HorizontalLayout();
         footer.setSpacing(true);
         footer.setVisible(false);
 
@@ -172,4 +172,10 @@ public class PersonForm extends ViewComponent {
         setReadOnly(true);
     }
 
+    @Override
+    protected void localize() {
+        final boolean readOnly = isReadOnly();
+        setItemDataSource(form.getItemDataSource());
+        setReadOnly(readOnly);
+    }
 }

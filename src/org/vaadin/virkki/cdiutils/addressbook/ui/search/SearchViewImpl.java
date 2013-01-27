@@ -73,17 +73,13 @@ public class SearchViewImpl extends AbstractView implements SearchView {
                     }
                 });
         mainPanel.addComponent(search);
+
+        localize();
     }
 
     private void constructFieldToSearch() {
         for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
             fieldToSearch.addItem(PersonList.NATURAL_COL_ORDER[i]);
-
-            final String header = getText("person-"
-                    + String.valueOf(PersonList.NATURAL_COL_ORDER[i])
-                            .toLowerCase());
-            fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i],
-                    header);
         }
         fieldToSearch.setNullSelectionAllowed(false);
     }
@@ -121,5 +117,16 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         searchName.setPropertyDataSource(new MethodProperty<String>(
                 searchFilter, SearchFilter.Fields.searchName.name()));
         saveSearch.setValue(true);
+    }
+
+    @Override
+    protected void localize() {
+        for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
+            final String header = getText("person-"
+                    + String.valueOf(PersonList.NATURAL_COL_ORDER[i])
+                            .toLowerCase());
+            fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i],
+                    header);
+        }
     }
 }
