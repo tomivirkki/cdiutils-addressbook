@@ -43,20 +43,20 @@ public class NavigationTree extends ViewComponent {
 
         tree.addItem(MainPresenter.NEW_SEARCH);
 
-        tree.addListener(listener);
+        tree.addValueChangeListener(listener);
         setCompositionRoot(tree);
 
         localize();
     }
 
     public void setSelectedView(final Class<? extends View> viewClass) {
-        tree.removeListener(listener);
+        tree.removeValueChangeListener(listener);
         if (SearchView.class.isAssignableFrom(viewClass)) {
             setValue(MainPresenter.NEW_SEARCH);
         } else if (ListView.class.isAssignableFrom(viewClass)) {
             setValue(MainPresenter.SHOW_ALL);
         }
-        tree.addListener(listener);
+        tree.addValueChangeListener(listener);
     }
 
     public void addSearchToTree(final SearchFilter searchFilter) {

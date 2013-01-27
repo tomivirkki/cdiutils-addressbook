@@ -40,7 +40,7 @@ public class PersonList extends ViewComponent {
         table.setColumnReorderingAllowed(true);
         table.setSelectable(true);
 
-        table.addListener(new Property.ValueChangeListener() {
+        table.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(
                     final com.vaadin.data.Property.ValueChangeEvent event) {

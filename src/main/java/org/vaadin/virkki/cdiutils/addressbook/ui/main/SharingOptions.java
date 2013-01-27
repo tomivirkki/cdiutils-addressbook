@@ -33,7 +33,7 @@ public class SharingOptions extends Window {
         mainLayout
                 .addComponent(new CheckBox(lang.getText("sharingoptions-mac")));
         final Button close = new Button(lang.getText("ok"));
-        close.addListener(new Button.ClickListener() {
+        close.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
                 SharingOptions.this.close();

@@ -100,7 +100,7 @@ public class PersonForm extends ViewComponent {
         footer.setSpacing(true);
         footer.setVisible(false);
 
-        saveButton.addListener(new Button.ClickListener() {
+        saveButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
                 if (form.isValid()) {
@@ -111,7 +111,7 @@ public class PersonForm extends ViewComponent {
         });
         footer.addComponent(saveButton);
 
-        cancelButton.addListener(new Button.ClickListener() {
+        cancelButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
                 fireViewEvent(ListPresenter.CANCEL_EDIT, null);
@@ -119,7 +119,7 @@ public class PersonForm extends ViewComponent {
         });
         footer.addComponent(cancelButton);
 
-        editButton.addListener(new Button.ClickListener() {
+        editButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
                 /*
