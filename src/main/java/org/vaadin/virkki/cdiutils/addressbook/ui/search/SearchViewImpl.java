@@ -22,6 +22,7 @@ import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
 public class SearchViewImpl extends AbstractView implements SearchView {
+
     @Inject
     @Preconfigured(captionKey = "searchview-searchterm")
     private TextField searchTerm;
@@ -34,14 +35,19 @@ public class SearchViewImpl extends AbstractView implements SearchView {
     @Inject
     @Preconfigured(captionKey = "searchview-searchname")
     private TextField searchName;
+    @Inject
+    @Preconfigured(captionKey = "searchview-caption")
+    private Panel mainPanel;
+    @Inject
+    @Preconfigured(captionKey = "searchview-search")
+    private Button searchButton;
 
     private SearchFilter searchFilter;
 
     @Override
     protected void initView() {
         final FormLayout mainLayout = new FormLayout();
-        final Panel mainPanel = new Panel(mainLayout);
-        mainPanel.setCaption(getText("searchview-caption"));
+        mainPanel.setContent(mainLayout);
         mainPanel.setContent(mainLayout);
         setCompositionRoot(mainPanel);
 
@@ -55,10 +61,10 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         mainLayout.addComponent(fieldToSearch);
 
         saveSearch.setValue(true);
-        saveSearch.addListener(new Property.ValueChangeListener() {
+        saveSearch.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
             public void valueChange(final ValueChangeEvent event) {
-                searchName.setVisible(saveSearch.booleanValue());
+                searchName.setVisible(saveSearch.getValue());
             }
         });
         mainLayout.addComponent(saveSearch);
@@ -66,25 +72,21 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         searchName.setNullRepresentation("");
         mainLayout.addComponent(searchName);
 
-        final Button search = new Button(getText("searchview-search"),
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(final ClickEvent event) {
-                        performSearch();
-                    }
-                });
-        mainLayout.addComponent(search);
+        searchButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(final ClickEvent event) {
+                performSearch();
+            }
+        });
+        mainLayout.addComponent(searchButton);
+
+        localize();
+
     }
 
     private void constructFieldToSearch() {
         for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
             fieldToSearch.addItem(PersonList.NATURAL_COL_ORDER[i]);
-
-            final String header = getText("person-"
-                    + String.valueOf(PersonList.NATURAL_COL_ORDER[i])
-                            .toLowerCase());
-            fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i],
-                    header);
         }
         fieldToSearch.setNullSelectionAllowed(false);
     }
@@ -120,5 +122,16 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         searchName.setPropertyDataSource(new MethodProperty<String>(
                 searchFilter, SearchFilter.Fields.searchName.name()));
         saveSearch.setValue(true);
+    }
+
+    @Override
+    protected void localize() {
+        for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
+            final String header = getText("person-"
+                    + String.valueOf(PersonList.NATURAL_COL_ORDER[i])
+                            .toLowerCase());
+            fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i],
+                    header);
+        }
     }
 }

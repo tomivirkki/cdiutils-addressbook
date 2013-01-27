@@ -10,6 +10,9 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainViewImpl;
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
 import org.vaadin.virkki.cdiutils.addressbook.util.Props;
 import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
+import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
+import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
+import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.Constants;
@@ -25,8 +28,7 @@ public class AddressBookUI extends UI {
 
     @WebServlet(urlPatterns = "/*", initParams = {
             @WebInitParam(name = VaadinSession.UI_PARAMETER, value = Props.UI_NAME),
-            @WebInitParam(name = Constants.SERVLET_PARAMETER_UI_PROVIDER, value = Props.UI_PROVIDER_NAME),
-            @WebInitParam(name = "heartbeatInterval", value = "1") })
+            @WebInitParam(name = Constants.SERVLET_PARAMETER_UI_PROVIDER, value = Props.UI_PROVIDER_NAME) })
     public static class AddressBookApplicationServlet extends VaadinServlet {
     }
 
@@ -35,10 +37,15 @@ public class AddressBookUI extends UI {
     @Inject
     private Lang lang;
 
+    @Inject
+    @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES)
+    private javax.enterprise.event.Event<ParameterDTO> localizeEvent;
+
     @Override
     public void setLocale(final Locale locale) {
-        lang.setLocale(Lang.EN_US);
+        lang.setLocale(locale);
         super.setLocale(locale);
+        localizeEvent.fire(new ParameterDTO(null));
     }
 
     @Override

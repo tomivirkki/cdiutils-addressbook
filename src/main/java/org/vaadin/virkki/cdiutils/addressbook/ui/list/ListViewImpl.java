@@ -20,9 +20,9 @@ import com.vaadin.ui.VerticalSplitPanel;
 public class ListViewImpl extends AbstractView implements ListView {
     /*
      * Instance<PersonForm> is used here so the personForm and personList won't
-     * be injected until needed (Lazy initialization). They are both
-     * VaadinScoped(VaadinScope.WINDOW) so personForm.get() will always return
-     * the same instance (for the current application level window).
+     * be injected until needed (Lazy initialization). They are both @UIScoped
+     * so personForm.get() will always return the same instance (for the current
+     * UI).
      */
     @Inject
     private Instance<PersonForm> personForm;

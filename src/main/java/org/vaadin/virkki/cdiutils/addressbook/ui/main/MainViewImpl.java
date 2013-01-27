@@ -68,8 +68,7 @@ public class MainViewImpl extends AbstractView implements MainViev {
 
         tree.get().setValue(MainPresenter.SHOW_ALL);
 
-        UI.getCurrent().addListener(new MouseEvents.ClickListener() {
-
+        UI.getCurrent().addClickListener(new MouseEvents.ClickListener() {
             @Override
             public void click(final ClickEvent event) {
                 if (event.isCtrlKey()) {

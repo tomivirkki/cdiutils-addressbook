@@ -6,14 +6,14 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import javax.enterprise.context.SessionScoped;
-
 import org.vaadin.virkki.cdiutils.TextBundle;
+import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 
 @SuppressWarnings("serial")
-@SessionScoped
+@UIScoped
 public class Lang implements Serializable, TextBundle {
     public static final Locale EN_US = new Locale("en", "US");
+    public static final Locale FI_FI = new Locale("fi", "FI");
 
     private ResourceBundle resourceBundle;
 
@@ -22,6 +22,8 @@ public class Lang implements Serializable, TextBundle {
         String value;
         if (resourceBundle == null) {
             value = "No bundle!";
+        } else if (key == null) {
+            value = "Null key!";
         } else {
             try {
                 value = MessageFormat.format(resourceBundle.getString(key),
@@ -41,5 +43,4 @@ public class Lang implements Serializable, TextBundle {
             // NOP
         }
     }
-
 }

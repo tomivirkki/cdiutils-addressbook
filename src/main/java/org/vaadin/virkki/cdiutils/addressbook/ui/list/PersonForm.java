@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
+import org.vaadin.virkki.cdiutils.addressbook.util.AddressBookStringToIntConverter;
 import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
@@ -13,7 +14,6 @@ import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -69,9 +69,11 @@ public class PersonForm extends ViewComponent {
                     field = new ComboBox(getText("person-city"), cityOptions);
 
                 } else if (propertyId.equals(Person.Fields.postalCode.name())) {
-                    field.addValidator(new RegexpValidator("[1-9][0-9]{4}",
-                            getText("personform-error-postalcode")));
+                    // field.addValidator(new RegexpValidator("[1-9][0-9]{4}",
+                    // getText("personform-error-postalcode")));
                     field.setRequired(true);
+                    ((TextField) field)
+                            .setConverter(new AddressBookStringToIntConverter());
 
                 } else if (propertyId.equals(Person.Fields.email.name())) {
                     field.addValidator(new EmailValidator(
@@ -173,4 +175,10 @@ public class PersonForm extends ViewComponent {
         setReadOnly(true);
     }
 
+    @Override
+    protected void localize() {
+        final boolean readOnly = isReadOnly();
+        setItemDataSource(form.getItemDataSource());
+        setReadOnly(readOnly);
+    }
 }

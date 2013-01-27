@@ -39,16 +39,14 @@ public class NavigationTree extends ViewComponent {
         tree.setSelectable(true);
 
         tree.addItem(MainPresenter.SHOW_ALL);
-        tree.setItemCaption(MainPresenter.SHOW_ALL,
-                getText("navigation-showall"));
         tree.setChildrenAllowed(MainPresenter.SHOW_ALL, false);
 
         tree.addItem(MainPresenter.NEW_SEARCH);
-        tree.setItemCaption(MainPresenter.NEW_SEARCH,
-                getText("navigation-search"));
 
         tree.addListener(listener);
         setCompositionRoot(tree);
+
+        localize();
     }
 
     public void setSelectedView(final Class<? extends View> viewClass) {
@@ -71,5 +69,13 @@ public class NavigationTree extends ViewComponent {
 
     public void setValue(final String value) {
         tree.setValue(value);
+    }
+
+    @Override
+    protected void localize() {
+        tree.setItemCaption(MainPresenter.SHOW_ALL,
+                getText("navigation-showall"));
+        tree.setItemCaption(MainPresenter.NEW_SEARCH,
+                getText("navigation-search"));
     }
 }

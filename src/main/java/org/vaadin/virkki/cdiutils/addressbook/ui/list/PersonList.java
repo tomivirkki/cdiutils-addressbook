@@ -34,6 +34,7 @@ public class PersonList extends ViewComponent {
             Person.Fields.postalCode.name(), Person.Fields.city.name() };
 
     public void init() {
+        setSizeFull();
         setCompositionRoot(table);
         table.setColumnCollapsingAllowed(true);
         table.setColumnReorderingAllowed(true);
@@ -51,16 +52,12 @@ public class PersonList extends ViewComponent {
         });
 
         initColumns();
+        localize();
     }
 
     private void initColumns() {
         table.setContainerDataSource(new BeanItemContainer<Person>(Person.class));
         table.setVisibleColumns(NATURAL_COL_ORDER);
-        for (final Object propertyId : table.getVisibleColumns()) {
-            final String header = getText("person-"
-                    + String.valueOf(propertyId).toLowerCase());
-            table.setColumnHeader(propertyId, header);
-        }
 
         table.addGeneratedColumn(Person.Fields.email.name(),
                 new ColumnGenerator() {
@@ -121,6 +118,15 @@ public class PersonList extends ViewComponent {
 
     public Item getSelectedItem() {
         return table.getItem(table.getValue());
+    }
+
+    @Override
+    protected void localize() {
+        for (final Object propertyId : table.getVisibleColumns()) {
+            final String header = getText("person-"
+                    + String.valueOf(propertyId).toLowerCase());
+            table.setColumnHeader(propertyId, header);
+        }
     }
 
 }
