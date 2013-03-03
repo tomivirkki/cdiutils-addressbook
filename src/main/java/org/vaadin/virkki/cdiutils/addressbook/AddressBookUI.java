@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainViewImpl;
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
 import org.vaadin.virkki.cdiutils.addressbook.util.Props;
+import org.vaadin.virkki.cdiutils.application.CdiUIProvider;
 import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
 import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
@@ -28,7 +29,7 @@ public class AddressBookUI extends UI {
 
     @WebServlet(urlPatterns = "/*", initParams = {
             @WebInitParam(name = VaadinSession.UI_PARAMETER, value = Props.UI_NAME),
-            @WebInitParam(name = Constants.SERVLET_PARAMETER_UI_PROVIDER, value = Props.UI_PROVIDER_NAME) })
+            @WebInitParam(name = Constants.SERVLET_PARAMETER_UI_PROVIDER, value = CdiUIProvider.PROVIDER_NAME) })
     public static class AddressBookApplicationServlet extends VaadinServlet {
     }
 
@@ -45,7 +46,7 @@ public class AddressBookUI extends UI {
     public void setLocale(final Locale locale) {
         lang.setLocale(locale);
         super.setLocale(locale);
-        localizeEvent.fire(new ParameterDTO(null));
+        localizeEvent.fire(new ParameterDTO(locale));
     }
 
     @Override

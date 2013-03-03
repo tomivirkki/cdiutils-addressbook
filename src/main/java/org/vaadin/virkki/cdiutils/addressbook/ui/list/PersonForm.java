@@ -3,12 +3,17 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.list;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.util.AddressBookStringToIntConverter;
 import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
+import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
+import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
+import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.data.Item;
@@ -175,8 +180,8 @@ public class PersonForm extends ViewComponent {
         setReadOnly(true);
     }
 
-    @Override
-    protected void localize() {
+    protected void localize(
+            @Observes(notifyObserver = Reception.IF_EXISTS) @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES) final ParameterDTO parameterDto) {
         final boolean readOnly = isReadOnly();
         setItemDataSource(form.getItemDataSource());
         setReadOnly(readOnly);
