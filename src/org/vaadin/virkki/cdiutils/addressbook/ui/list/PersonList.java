@@ -2,12 +2,17 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.list;
 
 import java.util.Collection;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.application.VaadinContext.VaadinScoped;
+import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
+import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
+import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.data.Item;
@@ -52,7 +57,7 @@ public class PersonList extends ViewComponent {
         });
 
         initColumns();
-        localize();
+        localize(null);
     }
 
     private void initColumns() {
@@ -121,8 +126,8 @@ public class PersonList extends ViewComponent {
         return table.getItem(table.getValue());
     }
 
-    @Override
-    protected void localize() {
+    protected void localize(
+            @Observes(notifyObserver = Reception.IF_EXISTS) @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES) final ParameterDTO parameterDto) {
         for (final Object propertyId : table.getVisibleColumns()) {
             final String header = getText("person-"
                     + String.valueOf(propertyId).toLowerCase());

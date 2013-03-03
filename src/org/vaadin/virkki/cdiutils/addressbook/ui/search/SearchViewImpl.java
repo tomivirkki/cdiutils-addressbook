@@ -37,10 +37,12 @@ public class SearchViewImpl extends AbstractView implements SearchView {
 
     private SearchFilter searchFilter;
 
+    @Inject
+    @Preconfigured(captionKey = "searchview-caption")
+    private Panel mainPanel;
+
     @Override
     protected final void initView() {
-        final Panel mainPanel = new Panel();
-        mainPanel.setCaption(getText("searchview-caption"));
         mainPanel.setContent(new FormLayout());
         setCompositionRoot(mainPanel);
 
