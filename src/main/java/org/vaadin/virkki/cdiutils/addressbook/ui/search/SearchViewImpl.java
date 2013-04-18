@@ -8,6 +8,7 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainPresenter;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.MethodProperty;
@@ -21,6 +22,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
+@UIScoped
 public class SearchViewImpl extends AbstractView implements SearchView {
 
     @Inject

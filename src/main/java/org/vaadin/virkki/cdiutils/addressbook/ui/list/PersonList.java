@@ -8,13 +8,13 @@ import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
-import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
 import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;

@@ -7,7 +7,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.vaadin.virkki.cdiutils.TextBundle;
-import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
+
+import com.vaadin.cdi.UIScoped;
 
 @SuppressWarnings("serial")
 @UIScoped

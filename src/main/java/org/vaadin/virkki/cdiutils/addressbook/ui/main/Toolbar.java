@@ -3,10 +3,10 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 import javax.inject.Inject;
 
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
-import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;

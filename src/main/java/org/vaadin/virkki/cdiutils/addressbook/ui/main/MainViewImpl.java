@@ -13,6 +13,7 @@ import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 import org.vaadin.virkki.cdiutils.mvp.View;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.ui.HorizontalSplitPanel;
@@ -20,6 +21,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
+@UIScoped
 public class MainViewImpl extends AbstractView implements MainViev {
     @Inject
     private Instance<NavigationTree> tree;

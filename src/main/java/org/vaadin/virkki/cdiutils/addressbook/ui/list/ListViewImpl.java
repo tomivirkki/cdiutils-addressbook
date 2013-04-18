@@ -9,6 +9,7 @@ import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Item;
 import com.vaadin.ui.VerticalSplitPanel;
 
@@ -17,6 +18,7 @@ import com.vaadin.ui.VerticalSplitPanel;
  * the calls from ListPresenter.
  */
 @SuppressWarnings("serial")
+@UIScoped
 public class ListViewImpl extends AbstractView implements ListView {
     /*
      * Instance<PersonForm> is used here so the personForm and personList won't

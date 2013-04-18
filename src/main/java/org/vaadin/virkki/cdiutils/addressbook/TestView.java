@@ -6,10 +6,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.vaadin.virkki.cdiutils.application.UIContext.ContextDelegate;
-import org.vaadin.virkki.cdiutils.application.UIContext.UIScoped;
 import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 
+import com.vaadin.cdi.UIScoped;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification;
@@ -22,12 +21,7 @@ public class TestView extends VerticalLayout {
     @Preconfigured(caption = "test")
     private Button testButton;
     @Inject
-    @Preconfigured(caption = "dereference")
-    private Button dereferenceButton;
-    @Inject
     private Instance<TestBean> testBean;
-    @Inject
-    private ContextDelegate contextDelegate;
 
     @PostConstruct
     public void postConstruct() {
@@ -37,13 +31,6 @@ public class TestView extends VerticalLayout {
             public void buttonClick(final ClickEvent event) {
                 Notification.show("Bean date: "
                         + testBean.get().getCurrentDate());
-            }
-        });
-        addComponent(dereferenceButton);
-        dereferenceButton.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                contextDelegate.dereferenceBeanInstance(TestBean.class);
             }
         });
     }
