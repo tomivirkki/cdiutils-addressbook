@@ -2,12 +2,13 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.list;
 
 import java.util.Collection;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.AbstractView;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
-import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Item;
@@ -31,10 +32,7 @@ public class ListViewImpl extends AbstractView implements ListView {
     @Inject
     private Instance<PersonList> personList;
 
-    /*
-     * View is constructed in the initView-method.
-     */
-    @Override
+    @PostConstruct
     protected void initView() {
         addStyleName("view");
         setSizeFull();

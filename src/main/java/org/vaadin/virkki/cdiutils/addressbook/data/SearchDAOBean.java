@@ -6,30 +6,25 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
 
 @Stateless
 public class SearchDAOBean {
-	@Inject
-	@Preconfigured
-	private Logger log;
+    private final Logger log = Logger.getLogger(getClass().getName());
 
-	private static Set<SearchFilter> searchDatabase = new HashSet<SearchFilter>();
+    private static Set<SearchFilter> searchDatabase = new HashSet<SearchFilter>();
 
-	public SearchFilter persist(SearchFilter searchFilter) {
-		searchFilter.setId(new Random().nextLong());
-		searchDatabase.add(searchFilter);
-		log.info("SearchFilter (" + searchFilter.getId() + ") was persisted.");
-		return searchFilter;
-	}
+    public SearchFilter persist(SearchFilter searchFilter) {
+        searchFilter.setId(new Random().nextLong());
+        searchDatabase.add(searchFilter);
+        log.info("SearchFilter (" + searchFilter.getId() + ") was persisted.");
+        return searchFilter;
+    }
 
-	public SearchFilter createNew() {
-		SearchFilter searchFilter = new SearchFilter();
-		searchFilter.setPropertyId(Person.Fields.lastName.name());
-		log.info("New searchfilter initialized");
-		return searchFilter;
-	}
+    public SearchFilter createNew() {
+        SearchFilter searchFilter = new SearchFilter();
+        searchFilter.setPropertyId(Person.Fields.lastName.name());
+        log.info("New searchfilter initialized");
+        return searchFilter;
+    }
 
 }

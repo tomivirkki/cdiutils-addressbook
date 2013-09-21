@@ -1,19 +1,20 @@
 package org.vaadin.virkki.cdiutils.addressbook.ui.list;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.AbstractPresenter;
+import org.vaadin.addon.cdimvp.AbstractPresenter.ViewInterface;
+import org.vaadin.addon.cdimvp.CDIEvent;
+import org.vaadin.addon.cdimvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.PersonDAOBean;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainPresenter;
-import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter;
-import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter.ViewInterface;
-import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 
 /*
- * List presenter is the presenter of ListView. EJBs and other resources should
+ * List presenter is the presenter for ListView. EJBs and other resources should
  * mainly be accessed in the presenter and results are pushed to the view
  * implementation trough it's API.
  */
@@ -23,7 +24,7 @@ public class ListPresenter extends AbstractPresenter<ListView> {
     @Inject
     private PersonDAOBean personDAO;
 
-    // CDI Utils includes a built-in CDI event qualifier @CDIEvent which
+    // CDI MVP includes a built-in CDI event qualifier @CDIEvent which
     // uses a String (method identifier) as it's member
     public static final String PERSON_SELECTED = "list_presenter_person_selected";
     public static final String EDIT_PERSON = "list_presenter_edit_person";
@@ -31,7 +32,7 @@ public class ListPresenter extends AbstractPresenter<ListView> {
     public static final String CANCEL_EDIT = "list_presenter_cancel_edit";
 
     /*
-     * This method observes events with a ParameterDTO as parameter type and
+     * This method observes events with a ParameterDTO as the parameter type and
      * PERSON_SELECTED as the @CDIEvent value
      */
     protected void personSelected(
@@ -89,13 +90,13 @@ public class ListPresenter extends AbstractPresenter<ListView> {
      * When the ListPresenter is initialized, it fetches a list of cities from
      * backend (personDAO) and passes the list to the view.
      */
-    @Override
+    @PostConstruct
     protected void initPresenter() {
         view.setCityOptions(personDAO.listCities());
     }
 
     @Override
-    public void viewOpened() {
+    public void viewEntered() {
         // NOP
     }
 

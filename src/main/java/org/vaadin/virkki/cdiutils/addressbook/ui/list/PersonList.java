@@ -6,13 +6,13 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.ParameterDTO;
+import org.vaadin.addon.cdimvp.ViewComponent;
+import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
+import org.vaadin.addon.cdiproperties.TextBundle;
+import org.vaadin.addon.cdiproperties.annotation.TableProperties;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
-import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
-import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Item;
@@ -29,8 +29,10 @@ import com.vaadin.ui.Table.ColumnGenerator;
 @UIScoped
 public class PersonList extends ViewComponent {
     @Inject
-    @Preconfigured(nullSelectionAllowed = false, sizeFull = true, immediate = true)
+    @TableProperties(nullSelectionAllowed = false, sizeFull = true, immediate = true, columnCollapsingAllowed = true, columnReorderingAllowed = true, selectable = true)
     private Table table;
+    @Inject
+    private TextBundle tb;
 
     public static final Object[] NATURAL_COL_ORDER = new Object[] {
             Person.Fields.firstName.name(), Person.Fields.lastName.name(),
@@ -41,9 +43,6 @@ public class PersonList extends ViewComponent {
     public void init() {
         setSizeFull();
         setCompositionRoot(table);
-        table.setColumnCollapsingAllowed(true);
-        table.setColumnReorderingAllowed(true);
-        table.setSelectable(true);
 
         table.addValueChangeListener(new Property.ValueChangeListener() {
             @Override
@@ -102,14 +101,14 @@ public class PersonList extends ViewComponent {
             container.addContainerFilter(searchFilter.getPropertyId(),
                     searchFilter.getTerm(), true, false);
 
-            final String propertyName = getText("person-"
+            final String propertyName = tb.getText("person-"
                     + String.valueOf(searchFilter.getPropertyId())
                             .toLowerCase());
             /*
              * personlist-searchnotification -text has 3 parameters which are
              * passed to the getText()-method.
              */
-            final String notificationText = getText(
+            final String notificationText = tb.getText(
                     "personlist-searchnotification", propertyName,
                     searchFilter.getTerm(), container.size());
             Notification.show(notificationText,
@@ -126,9 +125,9 @@ public class PersonList extends ViewComponent {
     }
 
     protected void localize(
-            @Observes(notifyObserver = Reception.IF_EXISTS) @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES) final ParameterDTO parameterDto) {
+            @Observes(notifyObserver = Reception.IF_EXISTS) @TextBundleUpdated final ParameterDTO parameterDto) {
         for (final Object propertyId : table.getVisibleColumns()) {
-            final String header = getText("person-"
+            final String header = tb.getText("person-"
                     + String.valueOf(propertyId).toLowerCase());
             table.setColumnHeader(propertyId, header);
         }

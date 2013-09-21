@@ -1,14 +1,16 @@
 package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.ParameterDTO;
+import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
+import org.vaadin.addon.cdiproperties.annotation.ButtonProperties;
+import org.vaadin.addon.cdiproperties.annotation.CheckBoxProperties;
+import org.vaadin.addon.cdiproperties.annotation.LabelProperties;
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
-import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.ui.Button;
@@ -24,18 +26,19 @@ public class SharingOptions extends Window {
     @Inject
     private Lang lang;
     @Inject
-    @Preconfigured(labelValueKey = "sharingoptions-content")
+    @LabelProperties(valueKey = "sharingoptions-content")
     private Label contentLabel;
     @Inject
-    @Preconfigured(captionKey = "sharingoptions-gmail")
+    @CheckBoxProperties(captionKey = "sharingoptions-gmail")
     private CheckBox gmailCheckBox;
     @Inject
-    @Preconfigured(captionKey = "sharingoptions-mac")
+    @CheckBoxProperties(captionKey = "sharingoptions-mac")
     private CheckBox macCheckBox;
     @Inject
-    @Preconfigured(captionKey = "ok")
+    @ButtonProperties(captionKey = "ok")
     private Button okButton;
 
+    @PostConstruct
     public void init() {
         final VerticalLayout mainLayout = new VerticalLayout();
         setContent(mainLayout);
@@ -59,7 +62,7 @@ public class SharingOptions extends Window {
     }
 
     void localize(
-            @Observes(notifyObserver = Reception.IF_EXISTS) @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES) final ParameterDTO parameters) {
+            @Observes(notifyObserver = Reception.IF_EXISTS) @TextBundleUpdated final ParameterDTO parameters) {
         setCaption(lang.getText("sharingoptions-caption"));
     }
 

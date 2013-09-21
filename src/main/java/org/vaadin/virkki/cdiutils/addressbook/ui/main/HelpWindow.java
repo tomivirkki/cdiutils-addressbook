@@ -1,14 +1,14 @@
 package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.ParameterDTO;
+import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
+import org.vaadin.addon.cdiproperties.annotation.LabelProperties;
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
-import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -22,18 +22,18 @@ public class HelpWindow extends Window {
     @Inject
     private Lang lang;
     @Inject
-    @Preconfigured(labelValueKey = "helpwindow-content")
+    @LabelProperties(valueKey = "helpwindow-content", contentMode = ContentMode.HTML)
     private Label label;
 
+    @PostConstruct
     public void init() {
         final VerticalLayout mainLayout = new VerticalLayout(label);
-        label.setContentMode(ContentMode.HTML);
         setContent(mainLayout);
         localize(null);
     }
 
     void localize(
-            @Observes(notifyObserver = Reception.IF_EXISTS) @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES) final ParameterDTO parameters) {
+            @Observes(notifyObserver = Reception.IF_EXISTS) @TextBundleUpdated final ParameterDTO parameters) {
         setCaption(lang.getText("helpwindow-caption"));
     }
 

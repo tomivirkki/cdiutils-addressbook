@@ -1,12 +1,22 @@
 package org.vaadin.virkki.cdiutils.addressbook.ui.search;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.AbstractView;
+import org.vaadin.addon.cdimvp.ParameterDTO;
+import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
+import org.vaadin.addon.cdiproperties.TextBundle;
+import org.vaadin.addon.cdiproperties.annotation.ButtonProperties;
+import org.vaadin.addon.cdiproperties.annotation.CheckBoxProperties;
+import org.vaadin.addon.cdiproperties.annotation.NativeSelectProperties;
+import org.vaadin.addon.cdiproperties.annotation.PanelProperties;
+import org.vaadin.addon.cdiproperties.annotation.TextFieldProperties;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.PersonList;
 import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainPresenter;
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.AbstractView;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Property;
@@ -26,27 +36,29 @@ import com.vaadin.ui.TextField;
 public class SearchViewImpl extends AbstractView implements SearchView {
 
     @Inject
-    @Preconfigured(captionKey = "searchview-searchterm")
+    @TextFieldProperties(captionKey = "searchview-searchterm", nullRepresentation = "")
     private TextField searchTerm;
     @Inject
-    @Preconfigured(captionKey = "searchview-fieldtosearch")
+    @NativeSelectProperties(captionKey = "searchview-fieldtosearch")
     private NativeSelect fieldToSearch;
     @Inject
-    @Preconfigured(captionKey = "searchview-savesearch", immediate = true)
+    @CheckBoxProperties(captionKey = "searchview-savesearch", immediate = true)
     private CheckBox saveSearch;
     @Inject
-    @Preconfigured(captionKey = "searchview-searchname")
+    @TextFieldProperties(captionKey = "searchview-searchname", nullRepresentation = "")
     private TextField searchName;
     @Inject
-    @Preconfigured(captionKey = "searchview-caption")
+    @PanelProperties(captionKey = "searchview-caption")
     private Panel mainPanel;
     @Inject
-    @Preconfigured(captionKey = "searchview-search")
+    @ButtonProperties(captionKey = "searchview-search")
     private Button searchButton;
+    @Inject
+    private TextBundle tb;
 
     private SearchFilter searchFilter;
 
-    @Override
+    @PostConstruct
     protected void initView() {
         final FormLayout mainLayout = new FormLayout();
         mainPanel.setContent(mainLayout);
@@ -56,7 +68,6 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         addStyleName("view");
         setSizeFull();
 
-        searchTerm.setNullRepresentation("");
         mainLayout.addComponent(searchTerm);
 
         constructFieldToSearch();
@@ -71,7 +82,6 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         });
         mainLayout.addComponent(saveSearch);
 
-        searchName.setNullRepresentation("");
         mainLayout.addComponent(searchName);
 
         searchButton.addClickListener(new Button.ClickListener() {
@@ -82,7 +92,7 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         });
         mainLayout.addComponent(searchButton);
 
-        localize();
+        localize(null);
 
     }
 
@@ -96,13 +106,14 @@ public class SearchViewImpl extends AbstractView implements SearchView {
     private void performSearch() {
         final String searchTerm = searchFilter.getTerm();
         if ((searchTerm == null) || searchTerm.equals("")) {
-            final String errorText = getText("searchview-error-termempty");
+            final String errorText = tb.getText("searchview-error-termempty");
             Notification.show(errorText, Notification.Type.WARNING_MESSAGE);
 
-        } else if (saveSearch.booleanValue()) {
+        } else if (saveSearch.getValue()) {
             if (searchFilter.getSearchName() == null
                     || searchFilter.getSearchName().isEmpty()) {
-                final String errorText = getText("searchview-error-filternameempty");
+                final String errorText = tb
+                        .getText("searchview-error-filternameempty");
                 Notification.show(errorText, Notification.Type.WARNING_MESSAGE);
             } else {
                 fireViewEvent(MainPresenter.SAVE_SEARCH, searchFilter);
@@ -126,10 +137,10 @@ public class SearchViewImpl extends AbstractView implements SearchView {
         saveSearch.setValue(true);
     }
 
-    @Override
-    protected void localize() {
+    protected void localize(
+            @Observes(notifyObserver = Reception.IF_EXISTS) @TextBundleUpdated final ParameterDTO parameters) {
         for (int i = 0; i < PersonList.NATURAL_COL_ORDER.length; i++) {
-            final String header = getText("person-"
+            final String header = tb.getText("person-"
                     + String.valueOf(PersonList.NATURAL_COL_ORDER[i])
                             .toLowerCase());
             fieldToSearch.setItemCaption(PersonList.NATURAL_COL_ORDER[i],

@@ -7,13 +7,14 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.ParameterDTO;
+import org.vaadin.addon.cdimvp.ViewComponent;
+import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
+import org.vaadin.addon.cdiproperties.TextBundle;
+import org.vaadin.addon.cdiproperties.annotation.ButtonProperties;
+import org.vaadin.addon.cdiproperties.annotation.FormProperties;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.util.AddressBookStringToIntConverter;
-import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
-import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Item;
@@ -34,25 +35,27 @@ import com.vaadin.ui.TextField;
 @UIScoped
 public class PersonForm extends ViewComponent {
     /*
-     * With @Preconfigured annotation you can define Vaadin component attributes
-     * (immediateness, height, caption and so on..) that are applied
+     * With CDI Properties annotations you can define Vaadin component
+     * attributes (immediateness, height, caption and so on..) that are applied
      * injection-time. captionKey = "save", states that the caption of the
      * injected button should be the text received from
      * TextBundle-implementation (Lang in the case of this project, the texts
      * are in AddressBookLang_en_US.properties) with the key "save".
      */
     @Inject
-    @Preconfigured(captionKey = "save")
+    @ButtonProperties(captionKey = "save")
     private Button saveButton;
     @Inject
-    @Preconfigured(captionKey = "cancel")
+    @ButtonProperties(captionKey = "cancel")
     private Button cancelButton;
     @Inject
-    @Preconfigured(captionKey = "edit")
+    @ButtonProperties(captionKey = "edit")
     private Button editButton;
     @Inject
-    @Preconfigured()
+    @FormProperties
     private Form form;
+    @Inject
+    private TextBundle tb;
 
     private Collection<String> cityOptions;
 
@@ -71,7 +74,7 @@ public class PersonForm extends ViewComponent {
                 Field field = new TextField();
 
                 if (propertyId.equals(Person.Fields.city.name())) {
-                    field = new ComboBox(getText("person-city"), cityOptions);
+                    field = new ComboBox(tb.getText("person-city"), cityOptions);
 
                 } else if (propertyId.equals(Person.Fields.postalCode.name())) {
                     // field.addValidator(new RegexpValidator("[1-9][0-9]{4}",
@@ -81,8 +84,8 @@ public class PersonForm extends ViewComponent {
                             .setConverter(new AddressBookStringToIntConverter());
 
                 } else if (propertyId.equals(Person.Fields.email.name())) {
-                    field.addValidator(new EmailValidator(
-                            getText("personform-error-email")));
+                    field.addValidator(new EmailValidator(tb
+                            .getText("personform-error-email")));
                     field.setRequired(true);
 
                 } else {
@@ -93,7 +96,7 @@ public class PersonForm extends ViewComponent {
                     ((AbstractTextField) field).setNullRepresentation("");
                 }
                 field.setWidth(200.f, UNITS_PIXELS);
-                field.setCaption(getText("person-"
+                field.setCaption(tb.getText("person-"
                         + String.valueOf(propertyId).toLowerCase()));
                 return field;
             }
@@ -181,7 +184,7 @@ public class PersonForm extends ViewComponent {
     }
 
     protected void localize(
-            @Observes(notifyObserver = Reception.IF_EXISTS) @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES) final ParameterDTO parameterDto) {
+            @Observes(notifyObserver = Reception.IF_EXISTS) @TextBundleUpdated final ParameterDTO parameterDto) {
         final boolean readOnly = isReadOnly();
         setItemDataSource(form.getItemDataSource());
         setReadOnly(readOnly);

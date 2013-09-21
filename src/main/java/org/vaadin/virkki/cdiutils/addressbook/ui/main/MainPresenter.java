@@ -3,14 +3,14 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 import javax.ejb.EJB;
 import javax.enterprise.event.Observes;
 
+import org.vaadin.addon.cdimvp.AbstractPresenter;
+import org.vaadin.addon.cdimvp.AbstractPresenter.ViewInterface;
+import org.vaadin.addon.cdimvp.CDIEvent;
+import org.vaadin.addon.cdimvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchDAOBean;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
-import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter;
-import org.vaadin.virkki.cdiutils.mvp.AbstractPresenter.ViewInterface;
-import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
 
 @SuppressWarnings("serial")
 @ViewInterface(MainViev.class)
@@ -66,12 +66,7 @@ public class MainPresenter extends AbstractPresenter<MainViev> {
     }
 
     @Override
-    protected void initPresenter() {
-        // NOP
-    }
-
-    @Override
-    public void viewOpened() {
+    public void viewEntered() {
         // NOP
     }
 

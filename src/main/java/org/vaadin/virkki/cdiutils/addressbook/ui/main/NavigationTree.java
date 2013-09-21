@@ -1,18 +1,19 @@
 package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.ParameterDTO;
+import org.vaadin.addon.cdimvp.View;
+import org.vaadin.addon.cdimvp.ViewComponent;
+import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
+import org.vaadin.addon.cdiproperties.TextBundle;
+import org.vaadin.addon.cdiproperties.annotation.TreeProperties;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 import org.vaadin.virkki.cdiutils.addressbook.ui.list.ListView;
 import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
-import org.vaadin.virkki.cdiutils.componentproducers.Localizer;
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.CDIEvent;
-import org.vaadin.virkki.cdiutils.mvp.ParameterDTO;
-import org.vaadin.virkki.cdiutils.mvp.View;
-import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.data.Property;
@@ -22,8 +23,10 @@ import com.vaadin.ui.Tree;
 @UIScoped
 public class NavigationTree extends ViewComponent {
     @Inject
-    @Preconfigured(nullSelectionAllowed = false, immediate = true)
+    @TreeProperties(nullSelectionAllowed = false, immediate = true, selectable = true)
     private Tree tree;
+    @Inject
+    private TextBundle tb;
 
     private final Property.ValueChangeListener listener = new Property.ValueChangeListener() {
         @Override
@@ -40,8 +43,8 @@ public class NavigationTree extends ViewComponent {
         }
     };
 
+    @PostConstruct
     public void init() {
-        tree.setSelectable(true);
 
         tree.addItem(MainPresenter.SHOW_ALL);
         tree.setChildrenAllowed(MainPresenter.SHOW_ALL, false);
@@ -77,10 +80,10 @@ public class NavigationTree extends ViewComponent {
     }
 
     protected void localize(
-            @Observes(notifyObserver = Reception.IF_EXISTS) @CDIEvent(Localizer.UPDATE_LOCALIZED_VALUES) final ParameterDTO parameterDto) {
+            @Observes(notifyObserver = Reception.IF_EXISTS) @TextBundleUpdated final ParameterDTO parameterDto) {
         tree.setItemCaption(MainPresenter.SHOW_ALL,
-                getText("navigation-showall"));
+                tb.getText("navigation-showall"));
         tree.setItemCaption(MainPresenter.NEW_SEARCH,
-                getText("navigation-search"));
+                tb.getText("navigation-search"));
     }
 }

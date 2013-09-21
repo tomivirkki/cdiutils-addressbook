@@ -1,12 +1,12 @@
 CdiUtils AddressBook is a project which demonstrates the use of CDI 
-(and CDI Utils add-on) in Vaadin projects.
+(and CDI MVP / CDI Properties add-ons) in Vaadin projects.
 
 The source originates from Vaadin Address Book -tutorial (https://vaadin.com/tutorial) 
-but most parts of the project have been re-written to utilize CDI and CDI Utils
-add-on (and MVP-pattern).
+but most parts of the project have been re-written to utilize CDI.
+
 The classes under package org.vaadin.virkki.cdiutils.addressbook.ui.list contain most
 of the documentation related to the changes.
 
 
 CdiUtils AddressBook can be deployed to any JavaEE6 (Web Profile)-compatible container
-(I've tested it on Glassfish 3.1 and JBoss AS7).
+(I've tested it on TomEE 1.5.2, Glassfish 3.1 and JBoss AS7).

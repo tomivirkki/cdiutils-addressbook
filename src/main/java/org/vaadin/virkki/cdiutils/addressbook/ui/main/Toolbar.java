@@ -1,10 +1,12 @@
 package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.ViewComponent;
+import org.vaadin.addon.cdiproperties.annotation.ButtonProperties;
+import org.vaadin.addon.cdiproperties.annotation.HorizontalLayoutProperties;
 import org.vaadin.virkki.cdiutils.addressbook.util.Lang;
-import org.vaadin.virkki.cdiutils.componentproducers.Preconfigured;
-import org.vaadin.virkki.cdiutils.mvp.ViewComponent;
 
 import com.vaadin.cdi.UIScoped;
 import com.vaadin.server.ThemeResource;
@@ -21,21 +23,22 @@ import com.vaadin.ui.UI;
 @UIScoped
 public class Toolbar extends ViewComponent {
     @Inject
-    @Preconfigured(styleName = "toolbar", spacing = true, width = 100.0f, widthUnits = Unit.PERCENTAGE)
+    @HorizontalLayoutProperties(styleName = "toolbar", spacing = true, widthValue = 100.0f, widthUnits = Unit.PERCENTAGE)
     private HorizontalLayout layout;
     @Inject
-    @Preconfigured(captionKey = "toolbar-addcontact")
+    @ButtonProperties(captionKey = "toolbar-addcontact")
     private Button addContactButton;
     @Inject
-    @Preconfigured(captionKey = "toolbar-search")
+    @ButtonProperties(captionKey = "toolbar-search")
     private Button searchButton;
     @Inject
-    @Preconfigured(captionKey = "toolbar-share")
+    @ButtonProperties(captionKey = "toolbar-share")
     private Button shareButton;
     @Inject
-    @Preconfigured(captionKey = "toolbar-help")
+    @ButtonProperties(captionKey = "toolbar-help")
     private Button helpButton;
 
+    @PostConstruct
     public void init() {
         addToolbarButton(addContactButton, "icons/32/document-add.png",
                 MainPresenter.NEW_CONTACT);

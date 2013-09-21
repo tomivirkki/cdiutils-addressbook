@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.vaadin.virkki.cdiutils.TextBundle;
+import org.vaadin.addon.cdiproperties.TextBundle;
 
 import com.vaadin.cdi.UIScoped;
 
