@@ -3,8 +3,8 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.main;
 import javax.ejb.EJB;
 import javax.enterprise.event.Observes;
 
-import org.vaadin.addon.cdimvp.AbstractPresenter;
-import org.vaadin.addon.cdimvp.AbstractPresenter.ViewInterface;
+import org.vaadin.addon.cdimvp.AbstractMVPPresenter;
+import org.vaadin.addon.cdimvp.AbstractMVPPresenter.ViewInterface;
 import org.vaadin.addon.cdimvp.CDIEvent;
 import org.vaadin.addon.cdimvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchDAOBean;
@@ -14,7 +14,7 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.search.SearchView;
 
 @SuppressWarnings("serial")
 @ViewInterface(MainViev.class)
-public class MainPresenter extends AbstractPresenter<MainViev> {
+public class MainPresenter extends AbstractMVPPresenter<MainViev> {
 
     @EJB
     private SearchDAOBean searchDAO;

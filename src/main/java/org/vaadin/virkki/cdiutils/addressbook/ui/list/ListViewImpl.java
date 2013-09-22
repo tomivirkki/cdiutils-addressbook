@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.vaadin.addon.cdimvp.AbstractView;
+import org.vaadin.addon.cdimvp.AbstractMVPView;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 
@@ -20,7 +20,7 @@ import com.vaadin.ui.VerticalSplitPanel;
  */
 @SuppressWarnings("serial")
 @UIScoped
-public class ListViewImpl extends AbstractView implements ListView {
+public class ListViewImpl extends AbstractMVPView implements ListView {
     /*
      * Instance<PersonForm> is used here so the personForm and personList won't
      * be injected until needed (Lazy initialization). They are both @UIScoped

@@ -4,8 +4,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.vaadin.addon.cdimvp.AbstractPresenter;
-import org.vaadin.addon.cdimvp.AbstractPresenter.ViewInterface;
+import org.vaadin.addon.cdimvp.AbstractMVPPresenter;
+import org.vaadin.addon.cdimvp.AbstractMVPPresenter.ViewInterface;
 import org.vaadin.addon.cdimvp.CDIEvent;
 import org.vaadin.addon.cdimvp.ParameterDTO;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
@@ -20,7 +20,7 @@ import org.vaadin.virkki.cdiutils.addressbook.ui.main.MainPresenter;
  */
 @SuppressWarnings("serial")
 @ViewInterface(ListView.class)
-public class ListPresenter extends AbstractPresenter<ListView> {
+public class ListPresenter extends AbstractMVPPresenter<ListView> {
     @Inject
     private PersonDAOBean personDAO;
 

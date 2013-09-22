@@ -4,8 +4,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.vaadin.addon.cdimvp.AbstractView;
-import org.vaadin.addon.cdimvp.View;
+import org.vaadin.addon.cdimvp.AbstractMVPView;
+import org.vaadin.addon.cdimvp.MVPView;
 import org.vaadin.addon.cdiproperties.annotation.HorizontalSplitPanelProperties;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 
@@ -17,7 +17,7 @@ import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
 @UIScoped
-public class MainViewImpl extends AbstractView implements MainViev {
+public class MainViewImpl extends AbstractMVPView implements MainViev {
     @Inject
     private NavigationTree tree;
     @Inject
@@ -27,7 +27,7 @@ public class MainViewImpl extends AbstractView implements MainViev {
     private HorizontalSplitPanel horizontalSplit;
 
     @Inject
-    private Instance<View> views;
+    private Instance<MVPView> views;
 
     // Windows
     @Inject
@@ -55,16 +55,16 @@ public class MainViewImpl extends AbstractView implements MainViev {
     }
 
     @Override
-    public void setView(final Class<? extends View> viewClass,
+    public void setView(final Class<? extends MVPView> viewClass,
             final boolean selectInNavigationTree) {
-        View view = views.select(viewClass).get();
+        MVPView view = views.select(viewClass).get();
         horizontalSplit.setSecondComponent((Component) view);
 
         if (selectInNavigationTree) {
             tree.setSelectedView(viewClass);
         }
 
-        view.enter();
+        ((AbstractMVPView) view).enter();
     }
 
     @Override

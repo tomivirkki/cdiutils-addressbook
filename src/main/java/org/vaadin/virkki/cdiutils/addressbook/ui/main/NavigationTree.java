@@ -5,8 +5,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
+import org.vaadin.addon.cdimvp.MVPView;
 import org.vaadin.addon.cdimvp.ParameterDTO;
-import org.vaadin.addon.cdimvp.View;
 import org.vaadin.addon.cdimvp.ViewComponent;
 import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
 import org.vaadin.addon.cdiproperties.TextBundle;
@@ -57,7 +57,7 @@ public class NavigationTree extends ViewComponent {
         localize(null);
     }
 
-    public void setSelectedView(final Class<? extends View> viewClass) {
+    public void setSelectedView(final Class<? extends MVPView> viewClass) {
         tree.removeValueChangeListener(listener);
         if (SearchView.class.isAssignableFrom(viewClass)) {
             setValue(MainPresenter.NEW_SEARCH);

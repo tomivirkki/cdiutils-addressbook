@@ -5,7 +5,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
-import org.vaadin.addon.cdimvp.AbstractView;
+import org.vaadin.addon.cdimvp.AbstractMVPView;
 import org.vaadin.addon.cdimvp.ParameterDTO;
 import org.vaadin.addon.cdiproperties.Localizer.TextBundleUpdated;
 import org.vaadin.addon.cdiproperties.TextBundle;
@@ -33,7 +33,7 @@ import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
 @UIScoped
-public class SearchViewImpl extends AbstractView implements SearchView {
+public class SearchViewImpl extends AbstractMVPView implements SearchView {
 
     @Inject
     @TextFieldProperties(captionKey = "searchview-searchterm", nullRepresentation = "")

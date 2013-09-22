@@ -2,13 +2,13 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.search;
 
 import javax.ejb.EJB;
 
-import org.vaadin.addon.cdimvp.AbstractPresenter;
-import org.vaadin.addon.cdimvp.AbstractPresenter.ViewInterface;
+import org.vaadin.addon.cdimvp.AbstractMVPPresenter;
+import org.vaadin.addon.cdimvp.AbstractMVPPresenter.ViewInterface;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchDAOBean;
 
 @SuppressWarnings("serial")
 @ViewInterface(SearchView.class)
-public class SearchPresenter extends AbstractPresenter<SearchView> {
+public class SearchPresenter extends AbstractMVPPresenter<SearchView> {
 
     @EJB
     private SearchDAOBean searchDAO;

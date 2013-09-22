@@ -2,11 +2,11 @@ package org.vaadin.virkki.cdiutils.addressbook.ui.list;
 
 import java.util.Collection;
 
-import org.vaadin.addon.cdimvp.View;
+import org.vaadin.addon.cdimvp.MVPView;
 import org.vaadin.virkki.cdiutils.addressbook.data.Person;
 import org.vaadin.virkki.cdiutils.addressbook.data.SearchFilter;
 
-public interface ListView extends View {
+public interface ListView extends MVPView {
 
     void setPersonList(Collection<Person> people);
 
