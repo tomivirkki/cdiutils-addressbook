@@ -32,7 +32,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
-@UIScoped
 public class SearchViewImpl extends AbstractMVPView implements SearchView {
 
     @Inject

@@ -16,7 +16,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
-@UIScoped
 public class MainViewImpl extends AbstractMVPView implements MainViev {
     @Inject
     private NavigationTree tree;

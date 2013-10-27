@@ -19,7 +19,6 @@ import com.vaadin.ui.VerticalSplitPanel;
  * the calls from ListPresenter.
  */
 @SuppressWarnings("serial")
-@UIScoped
 public class ListViewImpl extends AbstractMVPView implements ListView {
     /*
      * Instance<PersonForm> is used here so the personForm and personList won't
